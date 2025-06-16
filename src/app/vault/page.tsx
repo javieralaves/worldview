@@ -255,7 +255,7 @@ export default function VaultPage() {
   }
 
   return (
-    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-5xl mx-auto">
+    <div className="p-8 md:p-12 grid md:grid-cols-[1fr_320px] gap-8 max-w-6xl mx-auto">
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Mineral Vault (MNV)</h1>

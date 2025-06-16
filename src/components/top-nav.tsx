@@ -20,7 +20,7 @@ export function TopNav() {
   const { connected, connect, disconnect } = useWallet();
   const { theme, toggleTheme } = useTheme();
   return (
-    <nav className="border-b px-6 py-4 flex justify-between items-center">
+    <nav className="border-b px-8 py-6 flex justify-between items-center">
       <Link href="/" className="font-bold text-lg">
         Nest
       </Link>

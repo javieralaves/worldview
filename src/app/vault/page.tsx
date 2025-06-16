@@ -75,6 +75,10 @@ export default function VaultPage() {
   const monthlyEarnings = tokenBalance * price * apy * (30 / 365);
   const yearlyEarnings = tokenBalance * price * apy;
 
+  const currentTvl = tvlHistory[tvlHistory.length - 1].tvl;
+  const currentApy = performanceHistory[performanceHistory.length - 1].apy;
+  const currentPrice = performanceHistory[performanceHistory.length - 1].price;
+
   useEffect(() => {
     if (!tokenBalance) return;
     const id = setInterval(() => {
@@ -150,20 +154,28 @@ export default function VaultPage() {
             <CardTitle>Total Value Locked</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip />
-                <Area type="monotone" dataKey="tvl" stroke="hsl(var(--primary))" fill="url(#tvl)" />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
+            <div className="relative">
+              <span className="absolute top-2 left-2 rounded bg-background/80 px-2 py-1 text-sm font-semibold shadow">
+                {`$${currentTvl.toFixed(2)}M`}
+              </span>
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsAreaChart
+                  data={tvlHistory}
+                  margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" className="text-xs" />
+                  <YAxis className="text-xs" />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="tvl" stroke="hsl(var(--primary))" fill="url(#tvl)" />
+                </RechartsAreaChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
@@ -178,11 +190,15 @@ export default function VaultPage() {
                 <TabsTrigger value="price">Price</TabsTrigger>
               </TabsList>
               <TabsContent value="apy">
-                <ResponsiveContainer width="100%" height={300}>
-                  <RechartsAreaChart
-                    data={performanceHistory}
-                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-                  >
+                <div className="relative">
+                  <span className="absolute top-2 left-2 rounded bg-background/80 px-2 py-1 text-sm font-semibold shadow">
+                    {`${currentApy.toFixed(1)}%`}
+                  </span>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RechartsAreaChart
+                      data={performanceHistory}
+                      margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                    >
                     <defs>
                       <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
                         <stop
@@ -206,15 +222,20 @@ export default function VaultPage() {
                       stroke="hsl(var(--primary))"
                       fill="url(#apy)"
                     />
-                  </RechartsAreaChart>
-                </ResponsiveContainer>
+                    </RechartsAreaChart>
+                  </ResponsiveContainer>
+                </div>
               </TabsContent>
               <TabsContent value="price">
-                <ResponsiveContainer width="100%" height={300}>
-                  <RechartsAreaChart
-                    data={performanceHistory}
-                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-                  >
+                <div className="relative">
+                  <span className="absolute top-2 left-2 rounded bg-background/80 px-2 py-1 text-sm font-semibold shadow">
+                    {`$${currentPrice.toFixed(2)}`}
+                  </span>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RechartsAreaChart
+                      data={performanceHistory}
+                      margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                    >
                     <defs>
                       <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
                         <stop
@@ -238,8 +259,9 @@ export default function VaultPage() {
                       stroke="hsl(var(--primary)/0.5)"
                       fill="url(#price)"
                     />
-                  </RechartsAreaChart>
-                </ResponsiveContainer>
+                    </RechartsAreaChart>
+                  </ResponsiveContainer>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>

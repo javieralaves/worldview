@@ -77,9 +77,9 @@ export default function VaultPage() {
 
   useEffect(() => {
     if (!tokenBalance) return;
-    const rate = 0.087 / (365 * 24 * 60 * 60);
     const id = setInterval(() => {
-      setDollarBalance((d) => d + d * rate);
+      // Increment a few cents per second so the balance visibly grows
+      setDollarBalance((d) => d + 0.03);
     }, 1000);
     return () => clearInterval(id);
   }, [tokenBalance]);
@@ -179,9 +179,6 @@ export default function VaultPage() {
 
       <div className="space-y-6 sticky top-6 h-fit">
         <Card>
-          <CardHeader>
-            <CardTitle>Stake</CardTitle>
-          </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-4">

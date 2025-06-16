@@ -377,14 +377,14 @@ export default function VaultPage() {
               <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    <stop offset="5%" stopColor="hsl(var(--green-500))" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="hsl(var(--green-500))" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="month" className="text-xs" />
                 <YAxis className="text-xs" />
-                <Tooltip />
-                <Area type="monotone" dataKey="tvl" stroke="hsl(var(--primary))" fill="url(#tvl)" />
+                <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                <Area type="monotone" dataKey="tvl" stroke="hsl(var(--green-500))" fill="url(#tvl)" />
               </RechartsAreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -418,23 +418,23 @@ export default function VaultPage() {
                       <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
                         <stop
                           offset="5%"
-                          stopColor="hsl(var(--primary))"
+                          stopColor="hsl(var(--green-500))"
                           stopOpacity={0.8}
                         />
                         <stop
                           offset="95%"
-                          stopColor="hsl(var(--primary))"
+                          stopColor="hsl(var(--green-500))"
                           stopOpacity={0}
                         />
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="month" className="text-xs" />
                     <YAxis className="text-xs" />
-                    <Tooltip />
+                    <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
                     <Area
                       type="monotone"
                       dataKey="apy"
-                      stroke="hsl(var(--primary))"
+                      stroke="hsl(var(--green-500))"
                       fill="url(#apy)"
                     />
                   </RechartsAreaChart>
@@ -458,23 +458,23 @@ export default function VaultPage() {
                       <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
                         <stop
                           offset="5%"
-                          stopColor="hsl(var(--primary)/0.5)"
+                          stopColor="hsl(var(--green-500)/0.5)"
                           stopOpacity={0.8}
                         />
                         <stop
                           offset="95%"
-                          stopColor="hsl(var(--primary)/0.5)"
+                          stopColor="hsl(var(--green-500)/0.5)"
                           stopOpacity={0}
                         />
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="month" className="text-xs" />
                     <YAxis className="text-xs" />
-                    <Tooltip />
+                    <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
                     <Area
                       type="monotone"
                       dataKey="price"
-                      stroke="hsl(var(--primary)/0.5)"
+                      stroke="hsl(var(--green-500)/0.5)"
                       fill="url(#price)"
                     />
                   </RechartsAreaChart>

@@ -55,6 +55,9 @@ export default function VaultPage() {
   const stakeReceive = stakeValue ? stakeValue / price : 0;
   const redeemValue = parseFloat(redeemAmount) || 0;
   const burnAmount = redeemValue ? redeemValue / price : 0;
+  const apy = performanceHistory[performanceHistory.length - 1].apy / 100;
+  const monthlyEarnings = tokenBalance * price * apy * (30 / 365);
+  const yearlyEarnings = tokenBalance * price * apy;
 
   useEffect(() => {
     if (!tokenBalance) return;
@@ -220,6 +223,16 @@ export default function VaultPage() {
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {tokenBalance.toFixed(2)} MNV
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Projected 30d earnings</span>
+                      <span>{`$${monthlyEarnings.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Projected 1y earnings</span>
+                      <span>{`$${yearlyEarnings.toFixed(2)}`}</span>
+                    </div>
                   </div>
                 </TabsContent>
               )}

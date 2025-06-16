@@ -25,6 +25,14 @@ import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
 import { useWallet } from "@/components/wallet-context";
 import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  type PaginationState,
+} from "@tanstack/react-table";
+import {
   AreaChart as RechartsAreaChart,
   Area,
   XAxis,
@@ -59,7 +67,47 @@ const tokenholders = [
   { address: "0xAA1D84F2db4aF6e6424491bA7c7E5c3E785d8b8D", balance: 725 },
   { address: "0xFF9e35d1845e0b542dA0c4B9c0E8e079F06F4A79", balance: 450 },
   { address: "0x00BBa16A29d965F8F1d19089F9e3cF7AA02D2A42", balance: 100 },
+  { address: "0x1122334455667788990011223344556677889900", balance: 90 },
+  { address: "0xaabbccddeeff0011223344556677889900aabbcc", balance: 80 },
+  { address: "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef", balance: 70 },
+  { address: "0x1234567890abcdef1234567890abcdef12345678", balance: 60 },
+  { address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd", balance: 55 },
+  { address: "0x9988776655443322110099887766554433221100", balance: 50 },
+  { address: "0xfeefeefeefeefeefeefeefeefeefeefeefeefee", balance: 45 },
+  { address: "0x0102030405060708090a0b0c0d0e0f1011121314", balance: 40 },
+  { address: "0x1111111111111111111111111111111111111111", balance: 35 },
+  { address: "0x2222222222222222222222222222222222222222", balance: 30 },
+  { address: "0x3333333333333333333333333333333333333333", balance: 25 },
+  { address: "0x4444444444444444444444444444444444444444", balance: 20 },
+  { address: "0x5555555555555555555555555555555555555555", balance: 15 },
+  { address: "0x6666666666666666666666666666666666666666", balance: 14 },
+  { address: "0x7777777777777777777777777777777777777777", balance: 13 },
+  { address: "0x8888888888888888888888888888888888888888", balance: 12 },
+  { address: "0x9999999999999999999999999999999999999999", balance: 11 },
+  { address: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", balance: 10 },
+  { address: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", balance: 9 },
 ].sort((a, b) => b.balance - a.balance);
+
+type Tokenholder = (typeof tokenholders)[number];
+
+const columns: ColumnDef<Tokenholder>[] = [
+  {
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => (
+      <div className="font-mono">{row.getValue<string>("address")}</div>
+    ),
+  },
+  {
+    accessorKey: "balance",
+    header: () => <div className="text-right">Balance</div>,
+    cell: ({ row }) => (
+      <div className="text-right">
+        {row.getValue<number>("balance").toLocaleString()} MNV
+      </div>
+    ),
+  },
+];
 
 export default function VaultPage() {
   const { connected } = useWallet();
@@ -93,6 +141,20 @@ export default function VaultPage() {
   const apy = performanceHistory[performanceHistory.length - 1].apy / 100;
   const monthlyEarnings = tokenBalance * price * apy * (30 / 365);
   const yearlyEarnings = tokenBalance * price * apy;
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const table = useReactTable({
+    data: tokenholders,
+    columns,
+    state: { pagination },
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   useEffect(() => {
     setStakeStep("idle");
@@ -455,22 +517,55 @@ export default function VaultPage() {
           <CardContent className="p-0">
             <Table>
               <TableHeader className="bg-muted">
-                <TableRow className="border-muted">
-                  <TableHead>Address</TableHead>
-                  <TableHead className="text-right">Balance</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="border-muted"
+                  >
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id} className={header.column.id === "balance" ? "text-right" : undefined}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {tokenholders.map((holder) => (
-                  <TableRow key={holder.address} className="border-muted">
-                    <TableCell className="font-mono">{holder.address}</TableCell>
-                    <TableCell className="text-right">
-                      {holder.balance.toLocaleString()} MNV
-                    </TableCell>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="border-muted">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className={cell.column.id === "balance" ? "text-right" : ""}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            <div className="flex items-center justify-end space-x-2 p-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -126,3 +126,9 @@
     @apply bg-background text-foreground;
   }
 }
+[data-sonner-toaster][data-sonner-theme='dark'] [data-icon] {
+  color: hsl(var(--foreground));
+}
+[data-sonner-toaster][data-sonner-theme='dark'] [data-description] {
+  color: hsl(var(--muted-foreground));
+}

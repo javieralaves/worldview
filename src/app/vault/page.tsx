@@ -71,7 +71,9 @@ export default function VaultPage() {
   const [activeTab, setActiveTab] = useState("stake");
   const [stakeStep, setStakeStep] = useState<"idle" | "approving" | "approved" | "minting">("idle");
   const [redeemStep, setRedeemStep] = useState<"idle" | "approving" | "approved" | "redeeming">("idle");
-  const [transactions, setTransactions] = useState<{ type: "Mint" | "Redeem"; amount: number }[]>([]);
+  const [transactions, setTransactions] = useState<
+    { type: "Mint" | "Redeem"; amount: number; timestamp: number }[]
+  >([]);
   const price = performanceHistory[performanceHistory.length - 1].price;
   const currentApy = performanceHistory[performanceHistory.length - 1].apy;
   const tvl = tvlHistory[tvlHistory.length - 1].tvl;
@@ -140,7 +142,10 @@ export default function VaultPage() {
           setStakeAmount("");
           setStakeStep("idle");
           setActiveTab("balance");
-          setTransactions((tx) => [...tx, { type: "Mint", amount: value }]);
+          setTransactions((tx) => [
+            ...tx,
+            { type: "Mint", amount: value, timestamp: Date.now() },
+          ]);
           toast.success("Mint completed", {
             description: "Vault tokens will arrive to your wallet shortly",
           });
@@ -176,7 +181,10 @@ export default function VaultPage() {
         setRedeemAmount("");
         setRedeemStep("idle");
         setActiveTab("balance");
-        setTransactions((tx) => [...tx, { type: "Redeem", amount: value }]);
+        setTransactions((tx) => [
+          ...tx,
+          { type: "Redeem", amount: value, timestamp: Date.now() },
+        ]);
         toast.success("Redemption completed", {
           description: "Funds will arrive to your wallet shortly",
         });
@@ -238,19 +246,29 @@ export default function VaultPage() {
               <Table>
                 <TableHeader className="bg-muted">
                   <TableRow className="border-muted">
+                    <TableHead>Date</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead className="text-right">Amount (pUSD)</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {transactions.map((tx, i) => (
-                    <TableRow key={i} className="border-muted">
-                      <TableCell>{tx.type}</TableCell>
-                      <TableCell className="text-right">
-                        {tx.amount.toLocaleString()} pUSD
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {transactions
+                    .slice()
+                    .sort((a, b) => b.timestamp - a.timestamp)
+                    .map((tx, i) => (
+                      <TableRow key={i} className="border-muted">
+                        <TableCell>
+                          {new Date(tx.timestamp).toLocaleString(undefined, {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                        </TableCell>
+                        <TableCell>{tx.type}</TableCell>
+                        <TableCell className="text-right">
+                          {tx.amount.toLocaleString()} pUSD
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </CardContent>

@@ -12,6 +12,14 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +50,14 @@ const performanceHistory = [
   { month: "May", apy: 8.5, price: 1.05 },
   { month: "Jun", apy: 8.7, price: 1.06 },
 ];
+
+const tokenholders = [
+  { address: "0x8f2A557b32bfb50a0529Fe49829D2268403406f1", balance: 1500 },
+  { address: "0x4b3c845980b10703e7532a8DcE600b7B2F1C2A66", balance: 950 },
+  { address: "0xAA1D84F2db4aF6e6424491bA7c7E5c3E785d8b8D", balance: 725 },
+  { address: "0xFF9e35d1845e0b542dA0c4B9c0E8e079F06F4A79", balance: 450 },
+  { address: "0x00BBa16A29d965F8F1d19089F9e3cF7AA02D2A42", balance: 100 },
+].sort((a, b) => b.balance - a.balance);
 
 export default function VaultPage() {
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -201,6 +217,32 @@ export default function VaultPage() {
             <div>
               <strong>Due diligence docs:</strong> <a href="#" className="underline">Full package</a>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{`Tokenholders (${tokenholders.length})`}</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader className="bg-muted">
+                <TableRow className="border-muted">
+                  <TableHead>Address</TableHead>
+                  <TableHead className="text-right">Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tokenholders.map((holder) => (
+                  <TableRow key={holder.address} className="border-muted">
+                    <TableCell className="font-mono">{holder.address}</TableCell>
+                    <TableCell className="text-right">
+                      {holder.balance.toLocaleString()} MNV
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>

@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
 import { useWallet } from "@/components/wallet-context";
+import { toast } from "sonner";
 import {
   AreaChart as RechartsAreaChart,
   Area,
@@ -68,6 +69,15 @@ export default function VaultPage() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [redeemAmount, setRedeemAmount] = useState("");
   const [activeTab, setActiveTab] = useState("stake");
+  const [stakeStage, setStakeStage] = useState<
+    "idle" | "allow" | "allowLoading" | "mint" | "mintLoading"
+  >("idle");
+  const [redeemStage, setRedeemStage] = useState<
+    "idle" | "allow" | "allowLoading" | "redeem" | "redeemLoading"
+  >("idle");
+  const [transactions, setTransactions] = useState<
+    { type: string; amount: number }[]
+  >([]);
   const price = performanceHistory[performanceHistory.length - 1].price;
   const currentApy = performanceHistory[performanceHistory.length - 1].apy;
   const tvl = tvlHistory[tvlHistory.length - 1].tvl;
@@ -89,6 +99,24 @@ export default function VaultPage() {
   const yearlyEarnings = tokenBalance * price * apy;
 
   useEffect(() => {
+    if (stakeStage === "allowLoading" || stakeStage === "mintLoading") return;
+    if (parseFloat(stakeAmount) > 0) {
+      setStakeStage("allow");
+    } else {
+      setStakeStage("idle");
+    }
+  }, [stakeAmount, stakeStage]);
+
+  useEffect(() => {
+    if (redeemStage === "allowLoading" || redeemStage === "redeemLoading") return;
+    if (parseFloat(redeemAmount) > 0) {
+      setRedeemStage("allow");
+    } else {
+      setRedeemStage("idle");
+    }
+  }, [redeemAmount, redeemStage]);
+
+  useEffect(() => {
     if (!tokenBalance) return;
     const id = setInterval(() => {
       // Increment a few cents per second so the balance visibly grows
@@ -103,8 +131,7 @@ export default function VaultPage() {
     }
   }, [connected, activeTab]);
 
-  function onStake(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function processStake() {
     const value = parseFloat(stakeAmount);
     if (!isNaN(value) && value > 0 && value <= pusdBalance) {
       const minted = value / price;
@@ -113,11 +140,11 @@ export default function VaultPage() {
       setPusdBalance((b) => b - value);
       setStakeAmount("");
       setActiveTab("balance");
+      setTransactions((txs) => [...txs, { type: "Mint", amount: value }]);
     }
   }
 
-  function onRedeem(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function processRedeem() {
     const value = parseFloat(redeemAmount);
     if (!isNaN(value) && value > 0) {
       const burn = value / price;
@@ -127,7 +154,48 @@ export default function VaultPage() {
         setPusdBalance((b) => b + value);
         setRedeemAmount("");
         setActiveTab("balance");
+        setTransactions((txs) => [...txs, { type: "Redeem", amount: value }]);
       }
+    }
+  }
+
+  function handleStake(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (stakeStage === "allow") {
+      setStakeStage("allowLoading");
+      setTimeout(() => {
+        setStakeStage("mint");
+        toast.success("Access approved", { description: "You can now proceed to mint" });
+      }, 2000);
+      return;
+    }
+    if (stakeStage === "mint") {
+      setStakeStage("mintLoading");
+      setTimeout(() => {
+        processStake();
+        setStakeStage("idle");
+        toast.success("Access approved", { description: "You can now proceed to mint" });
+      }, 2000);
+    }
+  }
+
+  function handleRedeem(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (redeemStage === "allow") {
+      setRedeemStage("allowLoading");
+      setTimeout(() => {
+        setRedeemStage("redeem");
+        toast.success("Access approved", { description: "You can now proceed to redeem" });
+      }, 2000);
+      return;
+    }
+    if (redeemStage === "redeem") {
+      setRedeemStage("redeemLoading");
+      setTimeout(() => {
+        processRedeem();
+        setRedeemStage("idle");
+        toast.success("Access approved", { description: "You can now proceed to redeem" });
+      }, 2000);
     }
   }
 
@@ -175,6 +243,34 @@ export default function VaultPage() {
             </div>
           </div>
         </div>
+
+        {transactions.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{`Your Transactions (${transactions.length})`}</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader className="bg-muted">
+                  <TableRow className="border-muted">
+                    <TableHead>Type</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((tx, i) => (
+                    <TableRow key={i} className="border-muted">
+                      <TableCell>{tx.type}</TableCell>
+                      <TableCell className="text-right">
+                        {tx.amount.toLocaleString()} pUSD
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
@@ -409,7 +505,7 @@ export default function VaultPage() {
                 </TabsContent>
               )}
               <TabsContent value="stake">
-                <form className="space-y-4" onSubmit={onStake}>
+                <form className="space-y-4" onSubmit={handleStake}>
                   <div className="space-y-2">
                     <Label htmlFor="amount">Amount</Label>
                     <TokenInput
@@ -455,13 +551,21 @@ export default function VaultPage() {
                       <span className="text-right">10 day cooldown</span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={!connected}>
-                    Stake
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!connected || stakeStage.endsWith("Loading")}
+                  >
+                    {stakeStage === "allow" && "Allow access to wallet"}
+                    {stakeStage === "allowLoading" && "Allowing..."}
+                    {stakeStage === "mint" && "Mint"}
+                    {stakeStage === "mintLoading" && "Minting..."}
+                    {stakeStage === "idle" && "Stake"}
                   </Button>
                 </form>
               </TabsContent>
               <TabsContent value="redeem">
-                <form className="space-y-4" onSubmit={onRedeem}>
+                <form className="space-y-4" onSubmit={handleRedeem}>
                   <div className="space-y-2">
                     <Label htmlFor="redeem">Amount</Label>
                     <TokenInput
@@ -507,8 +611,16 @@ export default function VaultPage() {
                       </span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={!connected}>
-                    Redeem
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!connected || redeemStage.endsWith("Loading")}
+                  >
+                    {redeemStage === "allow" && "Allow access to wallet"}
+                    {redeemStage === "allowLoading" && "Allowing..."}
+                    {redeemStage === "redeem" && "Redeem"}
+                    {redeemStage === "redeemLoading" && "Redeeming..."}
+                    {redeemStage === "idle" && "Redeem"}
                   </Button>
                 </form>
               </TabsContent>

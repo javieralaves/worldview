@@ -3,6 +3,7 @@ import "./globals.css";
 import { WalletProvider } from "@/components/wallet-context";
 import { TopNav } from "@/components/top-nav";
 import { ThemeProvider } from "@/components/theme-context";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <WalletProvider>
             <TopNav />
             {children}
+            <Toaster position="bottom-right" richColors />
           </WalletProvider>
         </ThemeProvider>
       </body>

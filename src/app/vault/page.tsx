@@ -13,7 +13,7 @@ import {
   TabsContent,
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
 import {
   AreaChart as RechartsAreaChart,
@@ -46,8 +46,15 @@ const performanceHistory = [
 export default function VaultPage() {
   const [tokenBalance, setTokenBalance] = useState(0);
   const [dollarBalance, setDollarBalance] = useState(0);
-  const [amount, setAmount] = useState("");
+  const [stakeAmount, setStakeAmount] = useState("");
+  const [redeemAmount, setRedeemAmount] = useState("");
   const [activeTab, setActiveTab] = useState("stake");
+  const pusdBalance = 1000;
+  const price = performanceHistory[performanceHistory.length - 1].price;
+  const stakeValue = parseFloat(stakeAmount) || 0;
+  const stakeReceive = stakeValue ? stakeValue / price : 0;
+  const redeemValue = parseFloat(redeemAmount) || 0;
+  const burnAmount = redeemValue ? redeemValue / price : 0;
 
   useEffect(() => {
     if (!tokenBalance) return;
@@ -60,9 +67,10 @@ export default function VaultPage() {
 
   function onStake(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const value = parseFloat(amount);
+    const value = parseFloat(stakeAmount);
     if (!isNaN(value) && value > 0) {
-      setTokenBalance(value);
+      const minted = value / price;
+      setTokenBalance(minted);
       setDollarBalance(value);
       setActiveTab("balance");
     }
@@ -202,12 +210,27 @@ export default function VaultPage() {
                 <form className="space-y-4" onSubmit={onStake}>
                   <div className="space-y-2">
                     <Label htmlFor="amount">Amount</Label>
-                    <Input
+                    <TokenInput
                       id="amount"
                       type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      value={stakeAmount}
+                      onChange={(e) => setStakeAmount(e.target.value)}
                       placeholder="0"
+                      token="pUSD"
+                      usdValue={stakeValue}
+                      balance={pusdBalance}
+                      onMax={() => setStakeAmount(pusdBalance.toString())}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="receive">Receive</Label>
+                    <TokenInput
+                      id="receive"
+                      type="text"
+                      readOnly
+                      value={stakeAmount ? stakeReceive.toFixed(2) : ""}
+                      token="MNV"
+                      usdValue={stakeValue}
                     />
                   </div>
                   <Button type="submit" className="w-full">
@@ -219,7 +242,26 @@ export default function VaultPage() {
                 <form className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="redeem">Amount</Label>
-                    <Input id="redeem" type="number" placeholder="0" />
+                    <TokenInput
+                      id="redeem"
+                      type="number"
+                      value={redeemAmount}
+                      onChange={(e) => setRedeemAmount(e.target.value)}
+                      placeholder="0"
+                      token="pUSD"
+                      usdValue={redeemValue}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="burn">Burn</Label>
+                    <TokenInput
+                      id="burn"
+                      type="text"
+                      readOnly
+                      value={redeemAmount ? burnAmount.toFixed(2) : ""}
+                      token="MNV"
+                      usdValue={redeemValue}
+                    />
                   </div>
                   <Button type="submit" className="w-full">
                     Redeem

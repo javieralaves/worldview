@@ -25,6 +25,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -69,6 +70,30 @@ const performanceHistory = {
 };
 
 export default function VaultPage() {
+  const [tokenBalance, setTokenBalance] = useState(0);
+  const [dollarBalance, setDollarBalance] = useState(0);
+  const [amount, setAmount] = useState("");
+  const [activeTab, setActiveTab] = useState("stake");
+
+  useEffect(() => {
+    if (!tokenBalance) return;
+    const rate = 0.087 / (365 * 24 * 60 * 60);
+    const id = setInterval(() => {
+      setDollarBalance((d) => d + d * rate);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [tokenBalance]);
+
+  function onStake(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const value = parseFloat(amount);
+    if (!isNaN(value) && value > 0) {
+      setTokenBalance(value);
+      setDollarBalance(value);
+      setActiveTab("balance");
+    }
+  }
+
   return (
     <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-6">
@@ -158,16 +183,36 @@ export default function VaultPage() {
             <CardTitle>Stake</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="stake" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-4">
+                {tokenBalance > 0 && (
+                  <TabsTrigger value="balance">Balance</TabsTrigger>
+                )}
                 <TabsTrigger value="stake">Stake</TabsTrigger>
                 <TabsTrigger value="redeem">Redeem</TabsTrigger>
               </TabsList>
+              {tokenBalance > 0 && (
+                <TabsContent value="balance" className="space-y-2">
+                  <div className="flex items-center gap-2 text-2xl font-bold">
+                    {"$" + dollarBalance.toFixed(2)}
+                    <span className="animate-pulse rounded-full bg-green-500 size-2" />
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {tokenBalance.toFixed(2)} MNV
+                  </div>
+                </TabsContent>
+              )}
               <TabsContent value="stake">
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={onStake}>
                   <div className="space-y-2">
                     <Label htmlFor="amount">Amount</Label>
-                    <Input id="amount" type="number" placeholder="0" />
+                    <Input
+                      id="amount"
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder="0"
+                    />
                   </div>
                   <Button type="submit" className="w-full">
                     Stake

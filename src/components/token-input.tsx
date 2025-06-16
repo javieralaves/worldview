@@ -11,13 +11,14 @@ interface TokenInputProps extends React.ComponentProps<"input"> {
 }
 
 const TokenInput = React.forwardRef<HTMLInputElement, TokenInputProps>(
-  ({ token, usdValue, balance, onMax, className, readOnly, ...props }, ref) => {
+  ({ token, usdValue, balance, onMax, className, readOnly, disabled, ...props }, ref) => {
     return (
       <div className="grid gap-1">
         <div className="relative">
           <Input
             ref={ref}
             readOnly={readOnly}
+            disabled={disabled}
             className={cn("pr-16", className, readOnly && "cursor-default")}
             {...props}
           />
@@ -37,6 +38,7 @@ const TokenInput = React.forwardRef<HTMLInputElement, TokenInputProps>(
                   variant="ghost"
                   onClick={onMax}
                   className="px-1 h-5 text-[10px]"
+                  disabled={disabled}
                 >
                   MAX
                 </Button>

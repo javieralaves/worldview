@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
+import { useWallet } from "@/components/wallet-context";
 import {
   AreaChart as RechartsAreaChart,
   Area,
@@ -60,6 +61,7 @@ const tokenholders = [
 ].sort((a, b) => b.balance - a.balance);
 
 export default function VaultPage() {
+  const { connected } = useWallet();
   const [tokenBalance, setTokenBalance] = useState(0);
   const [dollarBalance, setDollarBalance] = useState(0);
   const [pusdBalance, setPusdBalance] = useState(1000);
@@ -349,6 +351,7 @@ export default function VaultPage() {
                       usdValue={stakeValue}
                       balance={pusdBalance}
                       onMax={() => setStakeAmount(pusdBalance.toString())}
+                      disabled={!connected}
                     />
                   </div>
                   <div className="space-y-2">
@@ -360,6 +363,7 @@ export default function VaultPage() {
                       value={stakeAmount ? stakeReceive.toFixed(2) : ""}
                       token="MNV"
                       usdValue={stakeValue}
+                      disabled={!connected}
                     />
                   </div>
                   <div className="space-y-1 text-sm">
@@ -376,7 +380,7 @@ export default function VaultPage() {
                       <span className="text-right">10 day cooldown</span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full" disabled={!connected}>
                     Stake
                   </Button>
                 </form>
@@ -396,6 +400,7 @@ export default function VaultPage() {
                       onMax={() =>
                         setRedeemAmount((tokenBalance * price).toString())
                       }
+                      disabled={!connected}
                     />
                   </div>
                   <div className="space-y-2">
@@ -408,6 +413,7 @@ export default function VaultPage() {
                       token="MNV"
                       usdValue={redeemValue}
                       balance={tokenBalance}
+                      disabled={!connected}
                     />
                   </div>
                   <div className="space-y-1 text-sm">
@@ -426,7 +432,7 @@ export default function VaultPage() {
                       </span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full" disabled={!connected}>
                     Redeem
                   </Button>
                 </form>

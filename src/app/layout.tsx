@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { WalletProvider } from "@/components/wallet-context";
+import { TopNav } from "@/components/top-nav";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased font-sans">
-        {children}
+        <WalletProvider>
+          <TopNav />
+          {children}
+        </WalletProvider>
       </body>
     </html>
   );

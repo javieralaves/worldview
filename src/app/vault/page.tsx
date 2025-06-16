@@ -139,6 +139,38 @@ export default function VaultPage() {
           <p className="text-muted-foreground">
             Tokenized exposure to royalty fees from U.S. mineral and oil extraction.
           </p>
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div>
+              <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
+              <div
+                className={`text-sm ${
+                  tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                }`}
+              >
+                {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+              <div
+                className={`text-sm ${
+                  priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                }`}
+              >
+                {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold">{currentApy}%</div>
+              <div
+                className={`text-sm ${
+                  apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                }`}
+              >
+                {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+              </div>
+            </div>
+          </div>
         </div>
 
         <Card>

@@ -46,10 +46,10 @@ const performanceHistory = [
 export default function VaultPage() {
   const [tokenBalance, setTokenBalance] = useState(0);
   const [dollarBalance, setDollarBalance] = useState(0);
+  const [pusdBalance, setPusdBalance] = useState(1000);
   const [stakeAmount, setStakeAmount] = useState("");
   const [redeemAmount, setRedeemAmount] = useState("");
   const [activeTab, setActiveTab] = useState("stake");
-  const pusdBalance = 1000;
   const price = performanceHistory[performanceHistory.length - 1].price;
   const stakeValue = parseFloat(stakeAmount) || 0;
   const stakeReceive = stakeValue ? stakeValue / price : 0;
@@ -68,11 +68,28 @@ export default function VaultPage() {
   function onStake(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = parseFloat(stakeAmount);
-    if (!isNaN(value) && value > 0) {
+    if (!isNaN(value) && value > 0 && value <= pusdBalance) {
       const minted = value / price;
-      setTokenBalance(minted);
-      setDollarBalance(value);
+      setTokenBalance((t) => t + minted);
+      setDollarBalance((d) => d + value);
+      setPusdBalance((b) => b - value);
+      setStakeAmount("");
       setActiveTab("balance");
+    }
+  }
+
+  function onRedeem(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const value = parseFloat(redeemAmount);
+    if (!isNaN(value) && value > 0) {
+      const burn = value / price;
+      if (burn <= tokenBalance) {
+        setTokenBalance((t) => t - burn);
+        setDollarBalance((d) => Math.max(d - value, 0));
+        setPusdBalance((b) => b + value);
+        setRedeemAmount("");
+        setActiveTab("balance");
+      }
     }
   }
 
@@ -239,7 +256,7 @@ export default function VaultPage() {
                 </form>
               </TabsContent>
               <TabsContent value="redeem">
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={onRedeem}>
                   <div className="space-y-2">
                     <Label htmlFor="redeem">Amount</Label>
                     <TokenInput
@@ -250,6 +267,9 @@ export default function VaultPage() {
                       placeholder="0"
                       token="pUSD"
                       usdValue={redeemValue}
+                      onMax={() =>
+                        setRedeemAmount((tokenBalance * price).toString())
+                      }
                     />
                   </div>
                   <div className="space-y-2">
@@ -261,6 +281,7 @@ export default function VaultPage() {
                       value={redeemAmount ? burnAmount.toFixed(2) : ""}
                       token="MNV"
                       usdValue={redeemValue}
+                      balance={tokenBalance}
                     />
                   </div>
                   <Button type="submit" className="w-full">

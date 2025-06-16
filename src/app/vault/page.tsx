@@ -131,18 +131,21 @@ export default function VaultPage() {
     }
     if (stakeStep === "approved") {
       if (isNaN(value) || value <= 0 || value > pusdBalance) return;
-      setStakeStep("minting");
-      setTimeout(() => {
-        const minted = value / price;
-        setTokenBalance((t) => t + minted);
-        setDollarBalance((d) => d + value);
-        setPusdBalance((b) => b - value);
-        setStakeAmount("");
-        setStakeStep("idle");
-        setActiveTab("balance");
-        setTransactions((tx) => [...tx, { type: "Mint", amount: value }]);
-      }, 2000);
-    }
+        setStakeStep("minting");
+        setTimeout(() => {
+          const minted = value / price;
+          setTokenBalance((t) => t + minted);
+          setDollarBalance((d) => d + value);
+          setPusdBalance((b) => b - value);
+          setStakeAmount("");
+          setStakeStep("idle");
+          setActiveTab("balance");
+          setTransactions((tx) => [...tx, { type: "Mint", amount: value }]);
+          toast.success("Mint completed", {
+            description: "Vault tokens will arrive to your wallet shortly",
+          });
+        }, 2000);
+      }
   }
 
   function onRedeem(e: React.FormEvent<HTMLFormElement>) {
@@ -174,6 +177,9 @@ export default function VaultPage() {
         setRedeemStep("idle");
         setActiveTab("balance");
         setTransactions((tx) => [...tx, { type: "Redeem", amount: value }]);
+        toast.success("Redemption completed", {
+          description: "Funds will arrive to your wallet shortly",
+        });
       }, 2000);
     }
   }

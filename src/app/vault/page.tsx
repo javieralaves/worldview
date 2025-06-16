@@ -1,21 +1,46 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+);
 
-const dummyHistory = {
+const tvlHistory = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   datasets: [
     {
-      label: "Yield",
-      data: [0, 1, 1.5, 2, 2.2, 2.4],
+      label: "TVL (M USD)",
+      data: [2, 2.5, 3, 3.8, 4.5, 5],
       borderColor: "hsl(var(--primary))",
       backgroundColor: "hsl(var(--primary))",
       fill: false,
@@ -23,86 +48,147 @@ const dummyHistory = {
   ],
 };
 
+const performanceHistory = {
+  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  datasets: [
+    {
+      label: "APY %",
+      data: [7, 7.5, 8, 8.3, 8.5, 8.7],
+      borderColor: "hsl(var(--primary))",
+      backgroundColor: "hsl(var(--primary))",
+      fill: false,
+    },
+    {
+      label: "Token Price",
+      data: [1, 1.02, 1.03, 1.04, 1.05, 1.06],
+      borderColor: "hsl(var(--primary)/0.5)",
+      backgroundColor: "hsl(var(--primary)/0.5)",
+      fill: false,
+    },
+  ],
+};
+
 export default function VaultPage() {
   return (
-    <div className="p-6 flex flex-col gap-6 max-w-3xl mx-auto">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold">US Treasury Bill Vault</h1>
-        <p className="text-muted-foreground">Stake into short-term US treasury bills and earn onchain yield.</p>
+    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-5xl mx-auto">
+      <div className="flex flex-col gap-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">Mineral Vault (MNV)</h1>
+          <p className="text-muted-foreground">
+            Tokenized exposure to royalty fees from U.S. mineral and oil extraction.
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Asset Overview</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div>
+              <strong>Issuer:</strong> Resource Minerals LLC
+            </div>
+            <div>
+              <strong>Current Yield (APY):</strong> 8.7% net of fees
+            </div>
+            <div>
+              <strong>Redemption timeline:</strong> 10 day cooldown
+            </div>
+            <div>
+              <strong>Underlying asset:</strong> Rights to royalty payments from mineral and oil extraction on U.S. land
+            </div>
+            <div>
+              <strong>Risk Level:</strong> BBB equivalent – moderate credit risk
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Value Locked</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Line
+              data={tvlHistory}
+              options={{ responsive: true, plugins: { legend: { display: false } } }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Historical Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Line
+              data={performanceHistory}
+              options={{ responsive: true }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Transparency</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div>
+              <strong>Legal & custodial structure:</strong> Delaware statutory trust, assets held with Wells Fargo as custodian
+            </div>
+            <div>
+              <strong>Asset pricing source:</strong> Monthly appraisal by third-party valuation agent
+            </div>
+            <div>
+              <strong>Vault token:</strong> 0xMineralTokenAddress (ERC-20, 18 decimals)
+              {" "}
+              <a href="#" className="underline">Explorer</a>
+            </div>
+            <div>
+              <strong>Fee structure:</strong> 1% management, 10% performance, 0.5% redemption
+            </div>
+            <div>
+              <strong>Due diligence docs:</strong> <a href="#" className="underline">Full package</a>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Vault Details</CardTitle>
-          <CardDescription>Asset: Treasury Bills</CardDescription>
-        </CardHeader>
-        <CardContent className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <div className="text-sm text-muted-foreground">Current APY</div>
-            <div className="text-lg font-medium">4.3%</div>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground">TVL</div>
-            <div className="text-lg font-medium">$12,340,000</div>
-          </div>
-          <div className="sm:col-span-2">
-            <Button asChild className="mt-2">
-              <a href="#">Asset Transparency</a>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Stake</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="stake" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="stake">Stake</TabsTrigger>
-              <TabsTrigger value="redeem">Redeem</TabsTrigger>
-            </TabsList>
-            <TabsContent value="stake">
-              <form className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="amount">Amount</Label>
-                  <Input id="amount" type="number" placeholder="0" />
-                </div>
-                <Button type="submit" className="w-full">Stake</Button>
-              </form>
-            </TabsContent>
-            <TabsContent value="redeem">
-              <form className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="redeem">Amount</Label>
-                  <Input id="redeem" type="number" placeholder="0" />
-                </div>
-                <Button type="submit" className="w-full">Redeem</Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Line data={dummyHistory} options={{ responsive: true, plugins: { legend: { display: false } } }} />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div>Deposit: 1,000 USDC - Jun 1</div>
-          <div>Rebalance: Bought T-Bills - May 28</div>
-          <div>Deposit: 500 USDC - May 15</div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6 sticky top-6 h-fit">
+        <Card>
+          <CardHeader>
+            <CardTitle>Stake</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="stake" className="w-full">
+              <TabsList className="mb-4">
+                <TabsTrigger value="stake">Stake</TabsTrigger>
+                <TabsTrigger value="redeem">Redeem</TabsTrigger>
+              </TabsList>
+              <TabsContent value="stake">
+                <form className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Amount</Label>
+                    <Input id="amount" type="number" placeholder="0" />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Stake
+                  </Button>
+                </form>
+              </TabsContent>
+              <TabsContent value="redeem">
+                <form className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="redeem">Amount</Label>
+                    <Input id="redeem" type="number" placeholder="0" />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Redeem
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

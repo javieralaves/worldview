@@ -250,6 +250,20 @@ export default function VaultPage() {
                       usdValue={stakeValue}
                     />
                   </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Exchange rate</span>
+                      <span className="text-right">{`1 MNV = $${price.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Staking fee</span>
+                      <span className="text-right">Free for now</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Redemption term</span>
+                      <span className="text-right">10 day cooldown</span>
+                    </div>
+                  </div>
                   <Button type="submit" className="w-full">
                     Stake
                   </Button>
@@ -283,6 +297,22 @@ export default function VaultPage() {
                       usdValue={redeemValue}
                       balance={tokenBalance}
                     />
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Exchange rate</span>
+                      <span className="text-right">{`1 MNV = $${price.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Redemption fee</span>
+                      <span className="text-right">0.5%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Receive by</span>
+                      <span className="text-right">
+                        {new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                   <Button type="submit" className="w-full">
                     Redeem

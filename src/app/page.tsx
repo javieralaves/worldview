@@ -10,19 +10,51 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  AreaChart as RechartsAreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function Home() {
-  const [tvl, setTvl] = useState(0);
-  const tokenholders = 1350;
+  const [tvl, setTvl] = useState(20);
+  const [tokenholders, setTokenholders] = useState(1000);
+
+  const tvlHistory = [
+    { month: "Jan", tvl: 15 },
+    { month: "Feb", tvl: 16 },
+    { month: "Mar", tvl: 17 },
+    { month: "Apr", tvl: 18.5 },
+    { month: "May", tvl: 19 },
+    { month: "Jun", tvl: 20 },
+  ];
+
+  const tokenholderHistory = [
+    { month: "Jan", holders: 800 },
+    { month: "Feb", holders: 900 },
+    { month: "Mar", holders: 950 },
+    { month: "Apr", holders: 1000 },
+    { month: "May", holders: 1100 },
+    { month: "Jun", holders: 1200 },
+  ];
 
   useEffect(() => {
-    const target = 37.5; // total TVL in millions
-    let current = 0;
+    const targetTvl = 37.5; // total TVL in millions
+    const targetHolders = 1350;
+    let currentTvl = 20;
+    let currentHolders = 1000;
     const id = setInterval(() => {
-      current = Math.min(current + 0.05, target);
-      setTvl(current);
-      if (current >= target) clearInterval(id);
-    }, 50);
+      currentTvl = Math.min(currentTvl + 0.25, targetTvl);
+      currentHolders = Math.min(currentHolders + 2, targetHolders);
+      setTvl(currentTvl);
+      setTokenholders(currentHolders);
+      if (currentTvl >= targetTvl && currentHolders >= targetHolders) {
+        clearInterval(id);
+      }
+    }, 500);
     return () => clearInterval(id);
   }, []);
 
@@ -44,30 +76,135 @@ export default function Home() {
     { name: "Real Estate", performance: 7.2, tvl: 4.1, yield: 7.1 },
   ];
 
+  const tvlDelta = tvl - 20;
+  const holderDelta = tokenholders - 1000;
+
   return (
-    <div className="space-y-12 p-6 md:p-10">
+    <div className="space-y-12 p-6 md:p-10 max-w-5xl mx-auto">
       <header className="text-center space-y-4">
         <h1 className="text-4xl font-bold">Nest</h1>
-        <div className="flex flex-col sm:flex-row justify-center gap-8">
-          <div className="space-y-1">
-            <div className="text-sm text-muted-foreground">Total value locked</div>
-            <div className="text-3xl font-bold">${tvl.toFixed(1)}M</div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-sm text-muted-foreground">Tokenholders</div>
-            <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
-          </div>
-        </div>
       </header>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Value Locked</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
+            <div
+              className={`text-sm ${
+                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
+            </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <RechartsAreaChart
+                data={tvlHistory}
+                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="tvlHome" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--green-500))"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--green-500))"
+                      stopOpacity={0}
+                    />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(var(--popover))",
+                    borderColor: "hsl(var(--border))",
+                    color: "hsl(var(--popover-foreground))",
+                  }}
+                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="tvl"
+                  stroke="hsl(var(--green-500))"
+                  fill="url(#tvlHome)"
+                />
+              </RechartsAreaChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Tokenholders</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
+            <div
+              className={`text-sm ${
+                holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
+            </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <RechartsAreaChart
+                data={tokenholderHistory}
+                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="holdersHome" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--green-500))"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--green-500))"
+                      stopOpacity={0}
+                    />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(var(--popover))",
+                    borderColor: "hsl(var(--border))",
+                    color: "hsl(var(--popover-foreground))",
+                  }}
+                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="holders"
+                  stroke="hsl(var(--green-500))"
+                  fill="url(#holdersHome)"
+                />
+              </RechartsAreaChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold">Trending compositions</h2>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {trending.map((t) => (
             <Card key={t.name} className="min-w-[16rem] shrink-0">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">{t.name}</CardTitle>
-                <CardDescription>{t.assets} assets</CardDescription>
+              <CardHeader className="flex items-center gap-2 pb-2">
+                <Avatar>
+                  <AvatarFallback>{t.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="space-y-1">
+                  <CardTitle className="text-base">{t.name}</CardTitle>
+                  <CardDescription>{t.assets} assets</CardDescription>
+                </div>
               </CardHeader>
               <CardContent className="space-y-1 text-sm">
                 <div>30d return {t.return}%</div>
@@ -83,12 +220,14 @@ export default function Home() {
         <h2 className="text-xl font-bold">Top curators</h2>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {curators.map((c) => (
-            <Card key={c.name} className="min-w-[12rem] shrink-0 items-center">
+            <Card key={c.name} className="min-w-[16rem] shrink-0">
               <CardHeader className="flex items-center gap-2 pb-2">
                 <Avatar>
                   <AvatarFallback>{c.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="text-base">{c.name}</CardTitle>
+                <div>
+                  <CardTitle className="text-base">{c.name}</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="space-y-1 text-sm">
                 <div>30d avg {c.return}%</div>
@@ -105,7 +244,10 @@ export default function Home() {
           {assets.map((a, i) => {
             const card = (
               <Card className="min-w-[16rem] shrink-0" key={a.name}>
-                <CardHeader className="pb-2">
+                <CardHeader className="flex items-center gap-2 pb-2">
+                  <Avatar>
+                    <AvatarFallback>{a.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
                   <CardTitle className="text-base">{a.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-1 text-sm">

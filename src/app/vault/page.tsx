@@ -15,59 +15,33 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Line } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  AreaChart as RechartsAreaChart,
+  Area,
+  XAxis,
+  YAxis,
   Tooltip,
-  Legend,
-} from "chart.js";
+  ResponsiveContainer,
+} from "recharts";
 import { useEffect, useState } from "react";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend
-);
+const tvlHistory = [
+  { month: "Jan", tvl: 2 },
+  { month: "Feb", tvl: 2.5 },
+  { month: "Mar", tvl: 3 },
+  { month: "Apr", tvl: 3.8 },
+  { month: "May", tvl: 4.5 },
+  { month: "Jun", tvl: 5 },
+];
 
-const tvlHistory = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  datasets: [
-    {
-      label: "TVL (M USD)",
-      data: [2, 2.5, 3, 3.8, 4.5, 5],
-      borderColor: "hsl(var(--primary))",
-      backgroundColor: "hsl(var(--primary))",
-      fill: false,
-    },
-  ],
-};
-
-const performanceHistory = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  datasets: [
-    {
-      label: "APY %",
-      data: [7, 7.5, 8, 8.3, 8.5, 8.7],
-      borderColor: "hsl(var(--primary))",
-      backgroundColor: "hsl(var(--primary))",
-      fill: false,
-    },
-    {
-      label: "Token Price",
-      data: [1, 1.02, 1.03, 1.04, 1.05, 1.06],
-      borderColor: "hsl(var(--primary)/0.5)",
-      backgroundColor: "hsl(var(--primary)/0.5)",
-      fill: false,
-    },
-  ],
-};
+const performanceHistory = [
+  { month: "Jan", apy: 7, price: 1 },
+  { month: "Feb", apy: 7.5, price: 1.02 },
+  { month: "Mar", apy: 8, price: 1.03 },
+  { month: "Apr", apy: 8.3, price: 1.04 },
+  { month: "May", apy: 8.5, price: 1.05 },
+  { month: "Jun", apy: 8.7, price: 1.06 },
+];
 
 export default function VaultPage() {
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -132,10 +106,20 @@ export default function VaultPage() {
             <CardTitle>Total Value Locked</CardTitle>
           </CardHeader>
           <CardContent>
-            <Line
-              data={tvlHistory}
-              options={{ responsive: true, plugins: { legend: { display: false } } }}
-            />
+            <ResponsiveContainer width="100%" height={300}>
+              <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <Tooltip />
+                <Area type="monotone" dataKey="tvl" stroke="hsl(var(--primary))" fill="url(#tvl)" />
+              </RechartsAreaChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
@@ -144,10 +128,25 @@ export default function VaultPage() {
             <CardTitle>Historical Performance</CardTitle>
           </CardHeader>
           <CardContent>
-            <Line
-              data={performanceHistory}
-              options={{ responsive: true }}
-            />
+            <ResponsiveContainer width="100%" height={300}>
+              <RechartsAreaChart data={performanceHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary)/0.5)" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="hsl(var(--primary)/0.5)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <Tooltip />
+                <Area type="monotone" dataKey="apy" stroke="hsl(var(--primary))" fill="url(#apy)" />
+                <Area type="monotone" dataKey="price" stroke="hsl(var(--primary)/0.5)" fill="url(#price)" />
+              </RechartsAreaChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 

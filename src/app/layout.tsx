@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { WalletProvider } from "@/components/wallet-context";
 import { TopNav } from "@/components/top-nav";
+import { ThemeProvider } from "@/components/theme-context";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,10 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased font-sans">
-        <WalletProvider>
-          <TopNav />
-          {children}
-        </WalletProvider>
+        <ThemeProvider>
+          <WalletProvider>
+            <TopNav />
+            {children}
+          </WalletProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -67,6 +67,8 @@ export default function VaultPage() {
   const [redeemAmount, setRedeemAmount] = useState("");
   const [activeTab, setActiveTab] = useState("stake");
   const price = performanceHistory[performanceHistory.length - 1].price;
+  const currentApy = performanceHistory[performanceHistory.length - 1].apy;
+  const tvl = tvlHistory[tvlHistory.length - 1].tvl;
   const stakeValue = parseFloat(stakeAmount) || 0;
   const stakeReceive = stakeValue ? stakeValue / price : 0;
   const redeemValue = parseFloat(redeemAmount) || 0;
@@ -149,7 +151,8 @@ export default function VaultPage() {
           <CardHeader>
             <CardTitle>Total Value Locked</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
             <ResponsiveContainer width="100%" height={300}>
               <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
@@ -177,7 +180,8 @@ export default function VaultPage() {
                 <TabsTrigger value="apy">APY</TabsTrigger>
                 <TabsTrigger value="price">Price</TabsTrigger>
               </TabsList>
-              <TabsContent value="apy">
+              <TabsContent value="apy" className="space-y-4">
+                <div className="text-3xl font-bold">{currentApy}%</div>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsAreaChart
                     data={performanceHistory}
@@ -209,7 +213,8 @@ export default function VaultPage() {
                   </RechartsAreaChart>
                 </ResponsiveContainer>
               </TabsContent>
-              <TabsContent value="price">
+              <TabsContent value="price" className="space-y-4">
+                <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsAreaChart
                     data={performanceHistory}

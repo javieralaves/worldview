@@ -183,20 +183,20 @@ export default function VaultPage() {
             <CardTitle>How Nest Works</CardTitle>
           </CardHeader>
           <CardContent>
-            <ol className="relative border-l border-border pl-6 space-y-6 text-sm">
-              <li className="relative pl-3">
+            <ol className="relative border-l border-border ml-6 space-y-6 text-sm">
+              <li className="relative ml-6">
                 <span className="absolute -left-6 top-0 flex size-6 items-center justify-center rounded-full bg-muted text-foreground text-xs font-medium">1</span>
                 Stake pUSD
               </li>
-              <li className="relative pl-3">
+              <li className="relative ml-6">
                 <span className="absolute -left-6 top-0 flex size-6 items-center justify-center rounded-full bg-muted text-foreground text-xs font-medium">2</span>
                 Receive a vault token representing your position
               </li>
-              <li className="relative pl-3">
+              <li className="relative ml-6">
                 <span className="absolute -left-6 top-0 flex size-6 items-center justify-center rounded-full bg-muted text-foreground text-xs font-medium">3</span>
                 Your token passively accrues yield over time
               </li>
-              <li className="relative pl-3">
+              <li className="relative ml-6">
                 <span className="absolute -left-6 top-0 flex size-6 items-center justify-center rounded-full bg-muted text-foreground text-xs font-medium">4</span>
                 Redeem anytime to claim principal plus yield
               </li>

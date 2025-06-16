@@ -33,6 +33,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const tvlHistory = [
   { month: "Jan", tvl: 2 },
@@ -68,6 +69,9 @@ export default function VaultPage() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [redeemAmount, setRedeemAmount] = useState("");
   const [activeTab, setActiveTab] = useState("stake");
+  const [stakeStep, setStakeStep] = useState<"idle" | "approving" | "approved" | "minting">("idle");
+  const [redeemStep, setRedeemStep] = useState<"idle" | "approving" | "approved" | "redeeming">("idle");
+  const [transactions, setTransactions] = useState<{ type: "Mint" | "Redeem"; amount: number }[]>([]);
   const price = performanceHistory[performanceHistory.length - 1].price;
   const currentApy = performanceHistory[performanceHistory.length - 1].apy;
   const tvl = tvlHistory[tvlHistory.length - 1].tvl;
@@ -89,6 +93,14 @@ export default function VaultPage() {
   const yearlyEarnings = tokenBalance * price * apy;
 
   useEffect(() => {
+    setStakeStep("idle");
+  }, [stakeAmount]);
+
+  useEffect(() => {
+    setRedeemStep("idle");
+  }, [redeemAmount]);
+
+  useEffect(() => {
     if (!tokenBalance) return;
     const id = setInterval(() => {
       // Increment a few cents per second so the balance visibly grows
@@ -106,28 +118,63 @@ export default function VaultPage() {
   function onStake(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = parseFloat(stakeAmount);
-    if (!isNaN(value) && value > 0 && value <= pusdBalance) {
-      const minted = value / price;
-      setTokenBalance((t) => t + minted);
-      setDollarBalance((d) => d + value);
-      setPusdBalance((b) => b - value);
-      setStakeAmount("");
-      setActiveTab("balance");
+    if (stakeStep === "idle") {
+      if (isNaN(value) || value <= 0 || value > pusdBalance) return;
+      setStakeStep("approving");
+      setTimeout(() => {
+        setStakeStep("approved");
+        toast.success("Access approved", {
+          description: "You can now proceed to mint",
+        });
+      }, 2000);
+      return;
+    }
+    if (stakeStep === "approved") {
+      if (isNaN(value) || value <= 0 || value > pusdBalance) return;
+      setStakeStep("minting");
+      setTimeout(() => {
+        const minted = value / price;
+        setTokenBalance((t) => t + minted);
+        setDollarBalance((d) => d + value);
+        setPusdBalance((b) => b - value);
+        setStakeAmount("");
+        setStakeStep("idle");
+        setActiveTab("balance");
+        setTransactions((tx) => [...tx, { type: "Mint", amount: value }]);
+      }, 2000);
     }
   }
 
   function onRedeem(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = parseFloat(redeemAmount);
-    if (!isNaN(value) && value > 0) {
+    if (redeemStep === "idle") {
+      if (isNaN(value) || value <= 0) return;
       const burn = value / price;
-      if (burn <= tokenBalance) {
+      if (burn > tokenBalance) return;
+      setRedeemStep("approving");
+      setTimeout(() => {
+        setRedeemStep("approved");
+        toast.success("Access approved", {
+          description: "You can now proceed to redeem",
+        });
+      }, 2000);
+      return;
+    }
+    if (redeemStep === "approved") {
+      if (isNaN(value) || value <= 0) return;
+      const burn = value / price;
+      if (burn > tokenBalance) return;
+      setRedeemStep("redeeming");
+      setTimeout(() => {
         setTokenBalance((t) => t - burn);
         setDollarBalance((d) => Math.max(d - value, 0));
         setPusdBalance((b) => b + value);
         setRedeemAmount("");
+        setRedeemStep("idle");
         setActiveTab("balance");
-      }
+        setTransactions((tx) => [...tx, { type: "Redeem", amount: value }]);
+      }, 2000);
     }
   }
 
@@ -175,6 +222,34 @@ export default function VaultPage() {
             </div>
           </div>
         </div>
+
+        {transactions.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Transactions</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader className="bg-muted">
+                  <TableRow className="border-muted">
+                    <TableHead>Type</TableHead>
+                    <TableHead className="text-right">Amount (pUSD)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((tx, i) => (
+                    <TableRow key={i} className="border-muted">
+                      <TableCell>{tx.type}</TableCell>
+                      <TableCell className="text-right">
+                        {tx.amount.toLocaleString()} pUSD
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
@@ -455,8 +530,20 @@ export default function VaultPage() {
                       <span className="text-right">10 day cooldown</span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={!connected}>
-                    Stake
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!connected || stakeStep === "approving" || stakeStep === "minting"}
+                  >
+                    {stakeStep === "approving"
+                      ? "Approving"
+                      : stakeStep === "approved"
+                      ? "Mint"
+                      : stakeStep === "minting"
+                      ? "Minting"
+                      : stakeAmount
+                      ? "Approve access"
+                      : "Stake"}
                   </Button>
                 </form>
               </TabsContent>
@@ -507,8 +594,20 @@ export default function VaultPage() {
                       </span>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={!connected}>
-                    Redeem
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!connected || redeemStep === "approving" || redeemStep === "redeeming"}
+                  >
+                    {redeemStep === "approving"
+                      ? "Approving"
+                      : redeemStep === "approved"
+                      ? "Redeem"
+                      : redeemStep === "redeeming"
+                      ? "Redeeming"
+                      : redeemAmount
+                      ? "Approve access"
+                      : "Redeem"}
                   </Button>
                 </form>
               </TabsContent>

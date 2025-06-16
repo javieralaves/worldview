@@ -88,6 +88,12 @@ export default function VaultPage() {
     return () => clearInterval(id);
   }, [tokenBalance]);
 
+  useEffect(() => {
+    if (!connected && activeTab === "balance") {
+      setActiveTab("stake");
+    }
+  }, [connected, activeTab]);
+
   function onStake(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = parseFloat(stakeAmount);
@@ -310,13 +316,13 @@ export default function VaultPage() {
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-4">
-                {tokenBalance > 0 && (
+                {connected && tokenBalance > 0 && (
                   <TabsTrigger value="balance">Balance</TabsTrigger>
                 )}
                 <TabsTrigger value="stake">Stake</TabsTrigger>
                 <TabsTrigger value="redeem">Redeem</TabsTrigger>
               </TabsList>
-              {tokenBalance > 0 && (
+              {connected && tokenBalance > 0 && (
                 <TabsContent value="balance" className="space-y-2">
                   <div className="flex items-center gap-2 text-2xl font-bold">
                     {"$" + dollarBalance.toFixed(2)}
@@ -349,8 +355,12 @@ export default function VaultPage() {
                       placeholder="0"
                       token="pUSD"
                       usdValue={stakeValue}
-                      balance={pusdBalance}
-                      onMax={() => setStakeAmount(pusdBalance.toString())}
+                      balance={connected ? pusdBalance : undefined}
+                      onMax={
+                        connected
+                          ? () => setStakeAmount(pusdBalance.toString())
+                          : undefined
+                      }
                       disabled={!connected}
                     />
                   </div>
@@ -412,7 +422,7 @@ export default function VaultPage() {
                       value={redeemAmount ? burnAmount.toFixed(2) : ""}
                       token="MNV"
                       usdValue={redeemValue}
-                      balance={tokenBalance}
+                      balance={connected ? tokenBalance : undefined}
                       disabled={!connected}
                     />
                   </div>

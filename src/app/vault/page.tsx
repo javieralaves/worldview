@@ -71,6 +71,15 @@ export default function VaultPage() {
   const price = performanceHistory[performanceHistory.length - 1].price;
   const currentApy = performanceHistory[performanceHistory.length - 1].apy;
   const tvl = tvlHistory[tvlHistory.length - 1].tvl;
+  const tvlDelta =
+    tvlHistory[tvlHistory.length - 1].tvl -
+    tvlHistory[tvlHistory.length - 2].tvl;
+  const apyDelta =
+    performanceHistory[performanceHistory.length - 1].apy -
+    performanceHistory[performanceHistory.length - 2].apy;
+  const priceDelta =
+    performanceHistory[performanceHistory.length - 1].price -
+    performanceHistory[performanceHistory.length - 2].price;
   const stakeValue = parseFloat(stakeAmount) || 0;
   const stakeReceive = stakeValue ? stakeValue / price : 0;
   const redeemValue = parseFloat(redeemAmount) || 0;
@@ -161,6 +170,13 @@ export default function VaultPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
+            <div
+              className={`text-sm ${
+                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
+            </div>
             <ResponsiveContainer width="100%" height={300}>
               <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
@@ -190,6 +206,13 @@ export default function VaultPage() {
               </TabsList>
               <TabsContent value="apy" className="space-y-4">
                 <div className="text-3xl font-bold">{currentApy}%</div>
+                <div
+                  className={`text-sm ${
+                    apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                  }`}
+                >
+                  {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+                </div>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsAreaChart
                     data={performanceHistory}
@@ -223,6 +246,13 @@ export default function VaultPage() {
               </TabsContent>
               <TabsContent value="price" className="space-y-4">
                 <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+                <div
+                  className={`text-sm ${
+                    priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                  }`}
+                >
+                  {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+                </div>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsAreaChart
                     data={performanceHistory}

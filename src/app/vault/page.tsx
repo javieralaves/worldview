@@ -172,25 +172,76 @@ export default function VaultPage() {
             <CardTitle>Historical Performance</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsAreaChart data={performanceHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary)/0.5)" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="hsl(var(--primary)/0.5)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip />
-                <Area type="monotone" dataKey="apy" stroke="hsl(var(--primary))" fill="url(#apy)" />
-                <Area type="monotone" dataKey="price" stroke="hsl(var(--primary)/0.5)" fill="url(#price)" />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
+            <Tabs defaultValue="apy" className="w-full">
+              <TabsList className="mb-4">
+                <TabsTrigger value="apy">APY</TabsTrigger>
+                <TabsTrigger value="price">Price</TabsTrigger>
+              </TabsList>
+              <TabsContent value="apy">
+                <ResponsiveContainer width="100%" height={300}>
+                  <RechartsAreaChart
+                    data={performanceHistory}
+                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="hsl(var(--primary))"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="hsl(var(--primary))"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="month" className="text-xs" />
+                    <YAxis className="text-xs" />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="apy"
+                      stroke="hsl(var(--primary))"
+                      fill="url(#apy)"
+                    />
+                  </RechartsAreaChart>
+                </ResponsiveContainer>
+              </TabsContent>
+              <TabsContent value="price">
+                <ResponsiveContainer width="100%" height={300}>
+                  <RechartsAreaChart
+                    data={performanceHistory}
+                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="hsl(var(--primary)/0.5)"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="hsl(var(--primary)/0.5)"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="month" className="text-xs" />
+                    <YAxis className="text-xs" />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="price"
+                      stroke="hsl(var(--primary)/0.5)"
+                      fill="url(#price)"
+                    />
+                  </RechartsAreaChart>
+                </ResponsiveContainer>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
 

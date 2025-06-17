@@ -809,6 +809,23 @@ export default function VaultPage() {
 
             <Card>
               <CardHeader>
+                <CardTitle>Underwriter Info</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p>
+                  Cicada is a third-party credit intelligence firm specializing
+                  in private credit and real-world asset underwriting. They
+                  provide institutional-grade risk analysis tailored to onchain
+                  finance.
+                </p>
+                <Button variant="link" className="px-0 text-muted-foreground">
+                  View Methodology
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle>Transparency</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm">

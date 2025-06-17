@@ -360,6 +360,16 @@ export default function VaultPage() {
     earnings: ((i + 1) / 30) * monthlyEarnings,
   }));
 
+  const payoutCycle = "Weekly";
+  const redemptionCapacity = "3 days";
+  const nextPayout = (() => {
+    const nowDate = new Date();
+    const day = nowDate.getDay();
+    const daysUntilMonday = ((1 - day + 7) % 7) || 7;
+    const next = new Date(nowDate.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
+    return next.toLocaleDateString(undefined, { dateStyle: "medium" });
+  })();
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -550,6 +560,7 @@ export default function VaultPage() {
             )}
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsTrigger value="liquidity">Liquidity</TabsTrigger>
             <TabsTrigger value="risk">Risk</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
@@ -834,6 +845,25 @@ export default function VaultPage() {
                     </ResponsiveContainer>
                   </TabsContent>
                 </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="liquidity" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Liquidity Profile</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div>
+                  <strong>Yield payout cycle:</strong> {payoutCycle}
+                </div>
+                <div>
+                  <strong>Next payout:</strong> {nextPayout}
+                </div>
+                <div>
+                  <strong>Redemption capacity:</strong> {redemptionCapacity}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -46,6 +46,7 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Link2 } from "lucide-react";
 import { truncateAddress } from "@/lib/utils";
 import Link from "next/link";
 import {
@@ -329,6 +330,17 @@ export default function VaultPage() {
           <p className="text-muted-foreground">
             Tokenized exposure to royalty fees from U.S. mineral and oil extraction.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href)
+              toast.success("Copied to clipboard")
+            }}
+          >
+            <Link2 /> Share
+          </Button>
           <div className="flex flex-col sm:flex-row gap-6 my-4">
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">TVL</div>

@@ -11,10 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  AreaChart as RechartsAreaChart,
-  Area,
-  XAxis,
-  YAxis,
+  LineChart as RechartsLineChart,
+  Line,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -22,6 +20,10 @@ import {
 export default function Home() {
   const [tvl, setTvl] = useState(20);
   const [tokenholders, setTokenholders] = useState(1000);
+  const volume = 6.2;
+  const volumeDelta = 0.5;
+  const avgApy = 7.9;
+  const apyDelta = 0.2;
 
   const tvlHistory = [
     { month: "Jan", tvl: 15 },
@@ -32,14 +34,6 @@ export default function Home() {
     { month: "Jun", tvl: 20 },
   ];
 
-  const tokenholderHistory = [
-    { month: "Jan", holders: 800 },
-    { month: "Feb", holders: 900 },
-    { month: "Mar", holders: 950 },
-    { month: "Apr", holders: 1000 },
-    { month: "May", holders: 1100 },
-    { month: "Jun", holders: 1200 },
-  ];
 
   useEffect(() => {
     const targetTvl = 37.5; // total TVL in millions
@@ -81,120 +75,59 @@ export default function Home() {
 
   return (
     <div className="space-y-12 p-6 md:p-10 max-w-[1080px] mx-auto">
-      <header className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Nest</h1>
-      </header>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Value Locked</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
-              <div
-                className={`text-sm ${
-                  tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                }`}
-              >
-                {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
-              </div>
+      <div className="flex flex-col sm:flex-row gap-6 justify-between">
+        <div className="space-y-1 flex-1">
+          <div className="text-xs text-muted-foreground">1D Volume</div>
+          <div className="text-xl font-bold">{`$${volume.toFixed(1)}M`}</div>
+          <div className={`text-sm ${volumeDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${volumeDelta >= 0 ? "+" : ""}${volumeDelta.toFixed(1)}%`}</div>
+        </div>
+        <div className="space-y-1 flex-1">
+          <div className="text-xs text-muted-foreground">Average APY</div>
+          <div className="text-xl font-bold">{avgApy}%</div>
+          <div className={`text-sm ${apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}%`}</div>
+        </div>
+        <div className="space-y-1 flex-1">
+          <div className="text-xs text-muted-foreground">Total Tokenholders</div>
+          <div className="text-xl font-bold">{tokenholders.toLocaleString()}</div>
+          <div className={`text-sm ${holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()}`}</div>
+        </div>
+      </div>
+      <section className="space-y-4">
+          <h2 className="text-xl font-bold">Total Value Locked</h2>
+          <div className="space-y-1">
+            <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
+            <div
+              className={`text-sm ${
+                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <RechartsAreaChart
-                data={tvlHistory}
-                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="tvlHome" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <RechartsLineChart
+              data={tvlHistory}
+              margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+            >
                 <Tooltip
                   contentStyle={{
-                    background: "hsl(var(--popover))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--popover-foreground))",
+                    background: "#000",
+                    borderColor: "#000",
+                    color: "#fff",
                   }}
-                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                  labelStyle={{ color: "#fff" }}
                 />
-                <Area
+                <Line
                   type="monotone"
                   dataKey="tvl"
                   stroke="hsl(var(--green-500))"
-                  fill="url(#tvlHome)"
+                  strokeWidth={3}
+                  dot={false}
                 />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Tokenholders</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
-              <div
-                className={`text-sm ${
-                  holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                }`}
-              >
-                {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <RechartsAreaChart
-                data={tokenholderHistory}
-                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="holdersHome" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--popover))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--popover-foreground))",
-                  }}
-                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="holders"
-                  stroke="hsl(var(--green-500))"
-                  fill="url(#holdersHome)"
-                />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+              </RechartsLineChart>
+          </ResponsiveContainer>
+        </section>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold">Trending compositions</h2>

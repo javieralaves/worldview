@@ -47,10 +47,7 @@ import {
   Radar,
   PolarGrid,
   PolarRadiusAxis,
-  RadialBarChart,
-  RadialBar,
   PolarAngleAxis,
-  Legend,
 } from "recharts";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -110,16 +107,6 @@ const riskProfile: { title: string; score: number }[] = [
   { title: "Management", score: 2 },
 ];
 
-const ratingScale = ["AAA", "AA", "A", "BBB", "BB", "B", "Caa"] as const;
-
-const ratingData = ratingScale.map((r) => ({
-  name: r,
-  value: 1,
-  fill:
-    r.startsWith(riskSummary.moodys[0])
-      ? "hsl(var(--primary))"
-      : "hsl(var(--muted))",
-}));
 
 const riskBreakdown = [
   {
@@ -883,25 +870,6 @@ export default function VaultPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Rating Spectrum</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={220}>
-                  <RadialBarChart
-                    innerRadius="30%"
-                    outerRadius="100%"
-                    data={ratingData}
-                    startAngle={90}
-                    endAngle={-270}
-                  >
-                    <RadialBar dataKey="value" background />
-                    <Legend />
-                  </RadialBarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
 
             <Card>
               <CardHeader>

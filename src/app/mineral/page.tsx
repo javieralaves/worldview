@@ -255,7 +255,7 @@ export default function VaultPage() {
   }
 
   return (
-    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-5xl mx-auto">
+    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-[1080px] mx-auto">
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Mineral Vault (MNV)</h1>
@@ -337,237 +337,253 @@ export default function VaultPage() {
           </Card>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Asset Overview</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div>
-              <strong>Issuer:</strong> Resource Minerals LLC
-            </div>
-            <div>
-              <strong>Current Yield (APY):</strong> 8.7% net of fees
-            </div>
-            <div>
-              <strong>Redemption timeline:</strong> 10 day cooldown
-            </div>
-            <div>
-              <strong>Underlying asset:</strong> Rights to royalty payments from mineral and oil extraction on U.S. land
-            </div>
-            <div>
-              <strong>Risk Level:</strong> BBB equivalent – moderate credit risk
-            </div>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="overview" className="flex flex-col gap-6">
+          <TabsList className="mb-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsTrigger value="risk">Risk</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Value Locked</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
-            <div
-              className={`text-sm ${
-                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-              }`}
-            >
-              {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--green-500))" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="hsl(var(--green-500))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
-                <Area type="monotone" dataKey="tvl" stroke="hsl(var(--green-500))" fill="url(#tvl)" />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          <TabsContent value="overview" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Asset Overview</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div>
+                  <strong>Issuer:</strong> Resource Minerals LLC
+                </div>
+                <div>
+                  <strong>Current Yield (APY):</strong> 8.7% net of fees
+                </div>
+                <div>
+                  <strong>Redemption timeline:</strong> 10 day cooldown
+                </div>
+                <div>
+                  <strong>Underlying asset:</strong> Rights to royalty payments from mineral and oil extraction on U.S. land
+                </div>
+                <div>
+                  <strong>Risk Level:</strong> BBB equivalent – moderate credit risk
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Historical Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="apy" className="w-full">
-              <TabsList className="mb-4">
-                <TabsTrigger value="apy">APY</TabsTrigger>
-                <TabsTrigger value="price">Price</TabsTrigger>
-              </TabsList>
-              <TabsContent value="apy" className="space-y-4">
-                <div className="text-3xl font-bold">{currentApy}%</div>
+          <TabsContent value="performance" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Value Locked</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
                 <div
                   className={`text-sm ${
-                    apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                    tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
                   }`}
                 >
-                  {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+                  {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
-                  <RechartsAreaChart
-                    data={performanceHistory}
-                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-                  >
+                  <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
-                        <stop
-                          offset="5%"
-                          stopColor="hsl(var(--green-500))"
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="hsl(var(--green-500))"
-                          stopOpacity={0}
-                        />
+                      <linearGradient id="tvl" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--green-500))" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="hsl(var(--green-500))" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="month" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
-                    <Area
-                      type="monotone"
-                      dataKey="apy"
-                      stroke="hsl(var(--green-500))"
-                      fill="url(#apy)"
-                    />
+                    <Area type="monotone" dataKey="tvl" stroke="hsl(var(--green-500))" fill="url(#tvl)" />
                   </RechartsAreaChart>
                 </ResponsiveContainer>
-              </TabsContent>
-              <TabsContent value="price" className="space-y-4">
-                <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
-                <div
-                  className={`text-sm ${
-                    priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                  }`}
-                >
-                  {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Historical Performance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="apy" className="w-full">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="apy">APY</TabsTrigger>
+                    <TabsTrigger value="price">Price</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="apy" className="space-y-4">
+                    <div className="text-3xl font-bold">{currentApy}%</div>
+                    <div
+                      className={`text-sm ${
+                        apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                      }`}
+                    >
+                      {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RechartsAreaChart
+                        data={performanceHistory}
+                        margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="apy" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                              offset="5%"
+                              stopColor="hsl(var(--green-500))"
+                              stopOpacity={0.8}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="hsl(var(--green-500))"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="month" className="text-xs" />
+                        <YAxis className="text-xs" />
+                        <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                        <Area
+                          type="monotone"
+                          dataKey="apy"
+                          stroke="hsl(var(--green-500))"
+                          fill="url(#apy)"
+                        />
+                      </RechartsAreaChart>
+                    </ResponsiveContainer>
+                  </TabsContent>
+                  <TabsContent value="price" className="space-y-4">
+                    <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+                    <div
+                      className={`text-sm ${
+                        priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                      }`}
+                    >
+                      {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RechartsAreaChart
+                        data={performanceHistory}
+                        margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                              offset="5%"
+                              stopColor="hsl(var(--green-500)/0.5)"
+                              stopOpacity={0.8}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="hsl(var(--green-500)/0.5)"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="month" className="text-xs" />
+                        <YAxis className="text-xs" />
+                        <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                        <Area
+                          type="monotone"
+                          dataKey="price"
+                          stroke="hsl(var(--green-500)/0.5)"
+                          fill="url(#price)"
+                        />
+                      </RechartsAreaChart>
+                    </ResponsiveContainer>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="risk" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Transparency</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div>
+                  <strong>Legal & custodial structure:</strong> Delaware statutory trust, assets held with Wells Fargo as custodian
                 </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <RechartsAreaChart
-                    data={performanceHistory}
-                    margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient id="price" x1="0" y1="0" x2="0" y2="1">
-                        <stop
-                          offset="5%"
-                          stopColor="hsl(var(--green-500)/0.5)"
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="hsl(var(--green-500)/0.5)"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="month" className="text-xs" />
-                    <YAxis className="text-xs" />
-                    <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
-                    <Area
-                      type="monotone"
-                      dataKey="price"
-                      stroke="hsl(var(--green-500)/0.5)"
-                      fill="url(#price)"
-                    />
-                  </RechartsAreaChart>
-                </ResponsiveContainer>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                <div>
+                  <strong>Asset pricing source:</strong> Monthly appraisal by third-party valuation agent
+                </div>
+                <div>
+                  <strong>Vault token:</strong> 0xMineralTokenAddress (ERC-20, 18 decimals)
+                  {" "}
+                  <a href="#" className="underline">Explorer</a>
+                </div>
+                <div>
+                  <strong>Fee structure:</strong> 1% management, 10% performance, 0.5% redemption
+                </div>
+                <div>
+                  <strong>Due diligence docs:</strong> <a href="#" className="underline">Full package</a>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Transparency</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div>
-              <strong>Legal & custodial structure:</strong> Delaware statutory trust, assets held with Wells Fargo as custodian
-            </div>
-            <div>
-              <strong>Asset pricing source:</strong> Monthly appraisal by third-party valuation agent
-            </div>
-            <div>
-              <strong>Vault token:</strong> 0xMineralTokenAddress (ERC-20, 18 decimals)
-              {" "}
-              <a href="#" className="underline">Explorer</a>
-            </div>
-            <div>
-              <strong>Fee structure:</strong> 1% management, 10% performance, 0.5% redemption
-            </div>
-            <div>
-              <strong>Due diligence docs:</strong> <a href="#" className="underline">Full package</a>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{`Tokenholders (${tokenholders.length})`}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader className="bg-muted">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    key={headerGroup.id}
-                    className="border-muted"
-                  >
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} className={header.column.id === "balance" ? "text-right" : undefined}>
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                      </TableHead>
+          <TabsContent value="activity" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>{`Tokenholders (${tokenholders.length})`}</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-muted">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        key={headerGroup.id}
+                        className="border-muted"
+                      >
+                        {headerGroup.headers.map((header) => (
+                          <TableHead key={header.id} className={header.column.id === "balance" ? "text-right" : undefined}>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </TableHead>
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="border-muted">
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className={cell.column.id === "balance" ? "text-right" : ""}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows.map((row) => (
+                      <TableRow key={row.id} className="border-muted">
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className={cell.column.id === "balance" ? "text-right" : ""}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="flex items-center justify-end space-x-2 p-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                  </TableBody>
+                </Table>
+                <div className="flex items-center justify-end space-x-2 p-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <div className="space-y-6 sticky top-6 h-fit">

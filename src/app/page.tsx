@@ -80,7 +80,7 @@ export default function Home() {
   const holderDelta = tokenholders - 1000;
 
   return (
-    <div className="space-y-12 p-6 md:p-10 max-w-5xl mx-auto">
+    <div className="space-y-12 p-6 md:p-10 max-w-[1080px] mx-auto">
       <header className="text-center space-y-4">
         <h1 className="text-4xl font-bold">Nest</h1>
       </header>

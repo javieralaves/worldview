@@ -41,7 +41,7 @@ import {
   Area,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
@@ -57,6 +57,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 const tvlHistory = [
   { month: "Jan", tvl: 2 },
@@ -75,6 +86,54 @@ const performanceHistory = [
   { month: "May", apy: 8.5, price: 1.05 },
   { month: "Jun", apy: 8.7, price: 1.06 },
 ];
+
+const riskSummary = {
+  level: "Moderate",
+  cicadaScore: 3,
+  moodys: "B2–B3",
+  narrative:
+    "This vault carries a moderate level of credit risk. Based on third-party credit analysis by Cicada Partners, it falls between B2–B3 on the Moody’s scale. Assets in this range are considered speculative, but are often structured with strong recovery protections. Historically, similar assets have experienced ~7% default rates and ~58% recovery.",
+};
+
+const ratingScale = ["AAA", "AA", "A", "BBB", "BB", "B", "Caa"] as const;
+
+const ratingDescriptions: Record<(typeof ratingScale)[number], string> = {
+  AAA: "Highest quality", 
+  AA: "Very high quality", 
+  A: "High quality", 
+  BBB: "Medium grade", 
+  BB: "Speculative", 
+  B: "Highly speculative", 
+  Caa: "Poor standing",
+};
+
+const riskFactors = [
+  {
+    id: "asset",
+    title: "Asset Risk",
+    details: [
+      { label: "Diversification", score: "3/5" },
+      { label: "Liquidity", score: "2/5" },
+      { label: "Counterparty quality", score: "3/5" },
+    ],
+  },
+  {
+    id: "structure",
+    title: "Capital Structure Risk",
+    details: [
+      { label: "Leverage", score: "4/5" },
+      { label: "Seniority", score: "2/5" },
+    ],
+  },
+  {
+    id: "manager",
+    title: "Managerial Risk",
+    details: [
+      { label: "Track record", score: "3/5" },
+      { label: "Transparency", score: "2/5" },
+    ],
+  },
+] as const;
 
 const tokenholders = [
   { address: "0x8f2A557b32bfb50a0529Fe49829D2268403406f1", balance: 1500 },
@@ -425,7 +484,7 @@ export default function VaultPage() {
                       </defs>
                       <XAxis dataKey="day" className="text-xs" />
                       <YAxis className="text-xs" />
-                      <Tooltip
+                      <RechartsTooltip
                         contentStyle={{
                           background: "hsl(var(--popover))",
                           borderColor: "hsl(var(--border))",
@@ -544,7 +603,7 @@ export default function VaultPage() {
                     </defs>
                     <XAxis dataKey="month" className="text-xs" />
                     <YAxis className="text-xs" />
-                    <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                    <RechartsTooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
                     <Area type="monotone" dataKey="tvl" stroke="hsl(var(--green-500))" fill="url(#tvl)" />
                   </RechartsAreaChart>
                 </ResponsiveContainer>
@@ -593,7 +652,7 @@ export default function VaultPage() {
                         </defs>
                         <XAxis dataKey="month" className="text-xs" />
                         <YAxis className="text-xs" />
-                        <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                        <RechartsTooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
                         <Area
                           type="monotone"
                           dataKey="apy"
@@ -635,7 +694,7 @@ export default function VaultPage() {
                         </defs>
                         <XAxis dataKey="month" className="text-xs" />
                         <YAxis className="text-xs" />
-                        <Tooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
+                        <RechartsTooltip contentStyle={{background:"hsl(var(--popover))",borderColor:"hsl(var(--border))",color:"hsl(var(--popover-foreground))"}} labelStyle={{color:"hsl(var(--popover-foreground))"}} />
                         <Area
                           type="monotone"
                           dataKey="price"
@@ -653,6 +712,103 @@ export default function VaultPage() {
           <TabsContent value="risk" className="flex flex-col gap-6">
             <Card>
               <CardHeader>
+                <CardTitle>Risk Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-xs text-muted-foreground cursor-help">Overall Risk</div>
+                      </TooltipTrigger>
+                      <TooltipContent>Low is safer, high is riskier.</TooltipContent>
+                    </Tooltip>
+                    <div className="flex items-center gap-1 font-semibold">
+                      <span
+                        className={`size-2 rounded-full ${riskSummary.level === "Low" ? "bg-green-500" : riskSummary.level === "Moderate" ? "bg-yellow-500" : "bg-red-500"}`}
+                      />
+                      {riskSummary.level}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-xs text-muted-foreground cursor-help">Cicada Risk Score</div>
+                      </TooltipTrigger>
+                      <TooltipContent>Independent score from Cicada Partners. 1 is riskiest, 5 is safest.</TooltipContent>
+                    </Tooltip>
+                    <div className="font-semibold">{riskSummary.cicadaScore}/5</div>
+                  </div>
+                  <div className="space-y-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-xs text-muted-foreground cursor-help">Moody&apos;s Equivalent</div>
+                      </TooltipTrigger>
+                      <TooltipContent>Approximate placement on Moody&apos;s corporate rating scale.</TooltipContent>
+                    </Tooltip>
+                    <div className="font-semibold">{riskSummary.moodys}</div>
+                  </div>
+                </div>
+                <p>{riskSummary.narrative}</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Rating Spectrum</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="relative h-6">
+                  <div className="h-2 bg-muted rounded-full" />
+                  <div
+                    className="absolute top-0 -mt-1 size-3 rounded-full bg-primary"
+                    style={{ left: `${(ratingScale.indexOf("B") / (ratingScale.length - 1)) * 100}%` }}
+                  />
+                  {ratingScale.map((r) => (
+                    <Tooltip key={r}>
+                      <TooltipTrigger asChild>
+                        <span
+                          className="absolute -translate-x-1/2 top-2 text-[10px] cursor-help"
+                          style={{ left: `${(ratingScale.indexOf(r) / (ratingScale.length - 1)) * 100}%` }}
+                        >
+                          {r}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>{ratingDescriptions[r]}</TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Risk Factors</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Accordion type="multiple" className="border rounded-md">
+                  {riskFactors.map((factor) => (
+                    <AccordionItem key={factor.id} value={factor.id}>
+                      <AccordionTrigger>{factor.title}</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-1 px-2">
+                          {factor.details.map((d, i) => (
+                            <li key={i} className="flex justify-between text-sm">
+                              <span>{d.label}</span>
+                              <span className="text-muted-foreground">{d.score}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+                <Button variant="link" className="px-0 text-muted-foreground">View full report</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle>Transparency</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
@@ -663,8 +819,7 @@ export default function VaultPage() {
                   <strong>Asset pricing source:</strong> Monthly appraisal by third-party valuation agent
                 </div>
                 <div>
-                  <strong>Vault token:</strong> 0xMineralTokenAddress (ERC-20, 18 decimals)
-                  {" "}
+                  <strong>Vault token:</strong> 0xMineralTokenAddress (ERC-20, 18 decimals) {" "}
                   <a href="#" className="underline">Explorer</a>
                 </div>
                 <div>

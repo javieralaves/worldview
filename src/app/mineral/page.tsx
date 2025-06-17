@@ -47,6 +47,15 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { truncateAddress } from "@/lib/utils";
+import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const tvlHistory = [
   { month: "Jan", tvl: 2 },
@@ -299,6 +308,19 @@ export default function VaultPage() {
     <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-[1080px] mx-auto">
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Mineral</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <h1 className="text-2xl font-bold">Mineral Vault (MNV)</h1>
           <p className="text-muted-foreground">
             Tokenized exposure to royalty fees from U.S. mineral and oil extraction.

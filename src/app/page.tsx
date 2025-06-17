@@ -121,8 +121,8 @@ export default function Home() {
                 <Line
                   type="monotone"
                   dataKey="tvl"
-                  stroke="hsl(var(--chart-2))"
-                  strokeWidth={3}
+                  stroke="var(--chart-2)"
+                  strokeWidth={4}
                   dot={false}
                 />
               </RechartsLineChart>

@@ -663,7 +663,7 @@ export default function VaultPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div>
-                  <strong>Issuer:</strong> Resource Minerals LLC
+                  <strong>Issuer:</strong> Mineral Vault I Ltd.
                 </div>
                 <div>
                   <strong>Current Yield (APY):</strong> 8.7% net of fees
@@ -676,6 +676,31 @@ export default function VaultPage() {
                 </div>
                 <div>
                   <strong>Risk Level:</strong> BBB equivalent – moderate credit risk
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>About the issuer</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <p>
+                  Mineral Vault I Ltd. is a special-purpose vehicle dedicated to
+                  issuing tokenized exposure to U.S. mineral royalty streams.
+                  It channels cash flows from the underlying assets to onchain
+                  investors.
+                </p>
+                <div>
+                  <strong>Entity license & domicile:</strong> Licensed business
+                  company incorporated in the British Virgin Islands
+                </div>
+                <div>
+                  <strong>Regulatory framework:</strong> BVI Business Companies
+                  Act and Securities and Investment Business Act
+                </div>
+                <div>
+                  <strong>Asset custodian:</strong> Wells Fargo Bank, N.A.
                 </div>
               </CardContent>
             </Card>

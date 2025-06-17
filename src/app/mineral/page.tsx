@@ -20,6 +20,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
@@ -87,6 +88,39 @@ const tokenholders = [
   { address: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", balance: 10 },
   { address: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", balance: 9 },
 ].sort((a, b) => b.balance - a.balance);
+
+const vaultActivity = [
+  {
+    address: "0x8f2A557b32bfb50a0529Fe49829D2268403406f1",
+    type: "Mint" as const,
+    amount: 500,
+    timestamp: Date.now() - 1000 * 60 * 60 * 2,
+  },
+  {
+    address: "0x4b3c845980b10703e7532a8DcE600b7B2F1C2A66",
+    type: "Redeem" as const,
+    amount: 250,
+    timestamp: Date.now() - 1000 * 60 * 60 * 5,
+  },
+  {
+    address: "0xAA1D84F2db4aF6e6424491bA7c7E5c3E785d8b8D",
+    type: "Mint" as const,
+    amount: 120,
+    timestamp: Date.now() - 1000 * 60 * 60 * 8,
+  },
+  {
+    address: "0xFF9e35d1845e0b542dA0c4B9c0E8e079F06F4A79",
+    type: "Mint" as const,
+    amount: 80,
+    timestamp: Date.now() - 1000 * 60 * 60 * 9,
+  },
+  {
+    address: "0x00BBa16A29d965F8F1d19089F9e3cF7AA02D2A42",
+    type: "Redeem" as const,
+    amount: 60,
+    timestamp: Date.now() - 1000 * 60 * 60 * 12,
+  },
+];
 
 type Tokenholder = (typeof tokenholders)[number];
 
@@ -532,6 +566,55 @@ export default function VaultPage() {
           <TabsContent value="activity" className="flex flex-col gap-6">
             <Card>
               <CardHeader>
+                <CardTitle>Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-muted">
+                    <TableRow className="border-muted">
+                      <TableHead>Date</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead className="text-right">Amount (pUSD)</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {vaultActivity
+                      .slice()
+                      .sort((a, b) => b.timestamp - a.timestamp)
+                      .map((tx, i) => (
+                        <TableRow key={i} className="border-muted">
+                          <TableCell>
+                            {new Date(tx.timestamp).toLocaleString(undefined, {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Avatar>
+                                <AvatarFallback>
+                                  {tx.address.slice(2, 4)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="font-mono">
+                                {tx.address}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{tx.type}</TableCell>
+                          <TableCell className="text-right">
+                            {tx.amount.toLocaleString()} pUSD
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle>{`Tokenholders (${tokenholders.length})`}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -543,7 +626,12 @@ export default function VaultPage() {
                         className="border-muted"
                       >
                         {headerGroup.headers.map((header) => (
-                          <TableHead key={header.id} className={header.column.id === "balance" ? "text-right" : undefined}>
+                          <TableHead
+                            key={header.id}
+                            className={
+                              header.column.id === "balance" ? "text-right" : undefined
+                            }
+                          >
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
@@ -557,7 +645,12 @@ export default function VaultPage() {
                     {table.getRowModel().rows.map((row) => (
                       <TableRow key={row.id} className="border-muted">
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className={cell.column.id === "balance" ? "text-right" : ""}>
+                          <TableCell
+                            key={cell.id}
+                            className={
+                              cell.column.id === "balance" ? "text-right" : ""
+                            }
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()

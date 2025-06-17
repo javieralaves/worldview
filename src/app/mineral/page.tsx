@@ -376,13 +376,15 @@ export default function VaultPage() {
                 <CardTitle>Total Value Locked</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
-                <div
-                  className={`text-sm ${
-                    tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                  }`}
-                >
-                  {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
+                  <div
+                    className={`text-sm ${
+                      tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                    }`}
+                  >
+                    {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M in the past 7 days`}
+                  </div>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
@@ -412,13 +414,15 @@ export default function VaultPage() {
                     <TabsTrigger value="price">Price</TabsTrigger>
                   </TabsList>
                   <TabsContent value="apy" className="space-y-4">
-                    <div className="text-3xl font-bold">{currentApy}%</div>
-                    <div
-                      className={`text-sm ${
-                        apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                      }`}
-                    >
-                      {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+                    <div className="space-y-1">
+                      <div className="text-3xl font-bold">{currentApy}%</div>
+                      <div
+                        className={`text-sm ${
+                          apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                        }`}
+                      >
+                        {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% in the past 7 days`}
+                      </div>
                     </div>
                     <ResponsiveContainer width="100%" height={300}>
                       <RechartsAreaChart
@@ -452,13 +456,15 @@ export default function VaultPage() {
                     </ResponsiveContainer>
                   </TabsContent>
                   <TabsContent value="price" className="space-y-4">
-                    <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
-                    <div
-                      className={`text-sm ${
-                        priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                      }`}
-                    >
-                      {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+                    <div className="space-y-1">
+                      <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+                      <div
+                        className={`text-sm ${
+                          priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                        }`}
+                      >
+                        {`${priceDelta >= 0 ? "+" : ""}$${priceDelta.toFixed(2)} in the past 7 days`}
+                      </div>
                     </div>
                     <ResponsiveContainer width="100%" height={300}>
                       <RechartsAreaChart

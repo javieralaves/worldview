@@ -11,16 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  AreaChart as RechartsAreaChart,
-  Area,
-  XAxis,
-  YAxis,
+  LineChart as RechartsLineChart,
+  Line,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
 
 export default function Home() {
-  const [tvl, setTvl] = useState(20);
   const [tokenholders, setTokenholders] = useState(1000);
 
   const tvlHistory = [
@@ -32,26 +29,14 @@ export default function Home() {
     { month: "Jun", tvl: 20 },
   ];
 
-  const tokenholderHistory = [
-    { month: "Jan", holders: 800 },
-    { month: "Feb", holders: 900 },
-    { month: "Mar", holders: 950 },
-    { month: "Apr", holders: 1000 },
-    { month: "May", holders: 1100 },
-    { month: "Jun", holders: 1200 },
-  ];
 
   useEffect(() => {
-    const targetTvl = 37.5; // total TVL in millions
     const targetHolders = 1350;
-    let currentTvl = 20;
     let currentHolders = 1000;
     const id = setInterval(() => {
-      currentTvl = Math.min(currentTvl + 0.25, targetTvl);
       currentHolders = Math.min(currentHolders + 2, targetHolders);
-      setTvl(currentTvl);
       setTokenholders(currentHolders);
-      if (currentTvl >= targetTvl && currentHolders >= targetHolders) {
+      if (currentHolders >= targetHolders) {
         clearInterval(id);
       }
     }, 500);
@@ -76,125 +61,74 @@ export default function Home() {
     { name: "Kasu", performance: 7.2, tvl: 4.1, yield: 7.1 },
   ];
 
-  const tvlDelta = tvl - 20;
   const holderDelta = tokenholders - 1000;
 
-  return (
-    <div className="space-y-12 p-6 md:p-10 max-w-[1080px] mx-auto">
-      <header className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Nest</h1>
-      </header>
+  const dayVolume = 1.2;
+  const volumeDelta = 0.3;
+  const averageApy = 8.4;
+  const apyDelta = 0.1;
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Value Locked</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
-              <div
-                className={`text-sm ${
-                  tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                }`}
-              >
-                {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
-              </div>
+  return (
+    <div className="space-y-12">
+      <div className="px-6 md:px-10 pt-6 md:pt-10 max-w-[1080px] mx-auto">
+        <div className="flex flex-col sm:flex-row gap-6">
+          <div className="space-y-1">
+            <div className="text-xs text-muted-foreground">1D Volume</div>
+            <div className="text-lg font-bold">{`$${dayVolume.toFixed(1)}M`}</div>
+            <div
+              className={`text-xs ${
+                volumeDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${volumeDelta >= 0 ? "+" : ""}${volumeDelta.toFixed(1)}M 24h`}
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <RechartsAreaChart
-                data={tvlHistory}
-                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="tvlHome" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--popover))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--popover-foreground))",
-                  }}
-                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="tvl"
-                  stroke="hsl(var(--green-500))"
-                  fill="url(#tvlHome)"
-                />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Tokenholders</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
-              <div
-                className={`text-sm ${
-                  holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-                }`}
-              >
-                {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
-              </div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-xs text-muted-foreground">Average APY</div>
+            <div className="text-lg font-bold">{averageApy}%</div>
+            <div
+              className={`text-xs ${
+                apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}% 24h`}
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <RechartsAreaChart
-                data={tokenholderHistory}
-                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="holdersHome" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="hsl(var(--green-500))"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--popover))",
-                    borderColor: "hsl(var(--border))",
-                    color: "hsl(var(--popover-foreground))",
-                  }}
-                  labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="holders"
-                  stroke="hsl(var(--green-500))"
-                  fill="url(#holdersHome)"
-                />
-              </RechartsAreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="space-y-1">
+            <div className="text-xs text-muted-foreground">Total Tokenholders</div>
+            <div className="text-lg font-bold">{tokenholders.toLocaleString()}</div>
+            <div
+              className={`text-xs ${
+                holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+              }`}
+            >
+              {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
+            </div>
+          </div>
+        </div>
       </div>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <RechartsLineChart data={tvlHistory} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+          <Tooltip
+            contentStyle={{
+              background: "hsl(var(--popover))",
+              borderColor: "hsl(var(--border))",
+              color: "hsl(var(--popover-foreground))",
+            }}
+            labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+          />
+          <Line
+            type="monotone"
+            dataKey="tvl"
+            stroke="hsl(var(--green-500))"
+            strokeWidth={2}
+            dot={false}
+          />
+        </RechartsLineChart>
+      </ResponsiveContainer>
+
+      <div className="space-y-12 p-6 md:p-10 max-w-[1080px] mx-auto">
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold">Trending compositions</h2>
@@ -272,5 +206,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+  </div>
   );
 }

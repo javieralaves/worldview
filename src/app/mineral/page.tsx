@@ -20,6 +20,10 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Avatar,
+  AvatarFallback,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TokenInput } from "@/components/token-input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +46,7 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { truncateAddress } from "@/lib/utils";
 
 const tvlHistory = [
   { month: "Jan", tvl: 2 },
@@ -88,6 +93,40 @@ const tokenholders = [
   { address: "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", balance: 9 },
 ].sort((a, b) => b.balance - a.balance);
 
+const now = Date.now();
+const vaultTransactions = [
+  {
+    address: tokenholders[0].address,
+    type: "Mint" as const,
+    amount: 5000,
+    timestamp: now - 36e5,
+  },
+  {
+    address: tokenholders[1].address,
+    type: "Redeem" as const,
+    amount: 2500,
+    timestamp: now - 72e5,
+  },
+  {
+    address: tokenholders[2].address,
+    type: "Mint" as const,
+    amount: 1000,
+    timestamp: now - 108e5,
+  },
+  {
+    address: tokenholders[3].address,
+    type: "Mint" as const,
+    amount: 750,
+    timestamp: now - 144e5,
+  },
+  {
+    address: tokenholders[4].address,
+    type: "Redeem" as const,
+    amount: 600,
+    timestamp: now - 180e5,
+  },
+];
+
 type Tokenholder = (typeof tokenholders)[number];
 
 const columns: ColumnDef<Tokenholder>[] = [
@@ -95,7 +134,9 @@ const columns: ColumnDef<Tokenholder>[] = [
     accessorKey: "address",
     header: "Address",
     cell: ({ row }) => (
-      <div className="font-mono">{row.getValue<string>("address")}</div>
+      <div className="font-mono">
+        {truncateAddress(row.getValue<string>("address"))}
+      </div>
     ),
   },
   {
@@ -530,6 +571,55 @@ export default function VaultPage() {
           </TabsContent>
 
           <TabsContent value="activity" className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-muted">
+                    <TableRow className="border-muted">
+                      <TableHead>Date</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead className="text-right">Amount (pUSD)</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {vaultTransactions
+                      .slice()
+                      .sort((a, b) => b.timestamp - a.timestamp)
+                      .map((tx, i) => (
+                        <TableRow key={i} className="border-muted">
+                          <TableCell>
+                            {new Date(tx.timestamp).toLocaleString(undefined, {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Avatar>
+                                <AvatarFallback>
+                                  {tx.address.slice(2, 4).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="font-mono">
+                                {truncateAddress(tx.address)}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{tx.type}</TableCell>
+                          <TableCell className="text-right">
+                            {tx.amount.toLocaleString()} pUSD
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>{`Tokenholders (${tokenholders.length})`}</CardTitle>

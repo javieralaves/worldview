@@ -43,9 +43,12 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarRadiusAxis,
   RadialBarChart,
   RadialBar,
-  LabelList,
   PolarAngleAxis,
   Legend,
 } from "recharts";
@@ -865,22 +868,17 @@ export default function VaultPage() {
                 </div>
                 <p>{riskSummary.narrative}</p>
                 <ResponsiveContainer width="100%" height={200}>
-                  <RadialBarChart
-                    innerRadius="20%"
-                    outerRadius="90%"
-                    data={riskProfile}
-                    startAngle={90}
-                    endAngle={-270}
-                  >
-                    <PolarAngleAxis type="number" domain={[0, 5]} tick={false} />
-                    <RadialBar dataKey="score" background>
-                      <LabelList
-                        dataKey="title"
-                        position="inside"
-                        fill="hsl(var(--primary-foreground))"
-                      />
-                    </RadialBar>
-                  </RadialBarChart>
+                  <RadarChart data={riskProfile}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="title" />
+                    <PolarRadiusAxis domain={[0, 5]} tick={false} />
+                    <Radar
+                      dataKey="score"
+                      fill="hsl(var(--chart-2))"
+                      stroke="hsl(var(--chart-2))"
+                      fillOpacity={0.6}
+                    />
+                  </RadarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>

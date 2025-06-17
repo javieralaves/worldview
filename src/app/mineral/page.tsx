@@ -191,6 +191,10 @@ export default function VaultPage() {
   const apy = performanceHistory[performanceHistory.length - 1].apy / 100;
   const monthlyEarnings = tokenBalance * price * apy * (30 / 365);
   const yearlyEarnings = tokenBalance * price * apy;
+  const earningsProjection = Array.from({ length: 30 }, (_, i) => ({
+    day: i + 1,
+    earnings: ((i + 1) / 30) * monthlyEarnings,
+  }));
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -224,10 +228,10 @@ export default function VaultPage() {
   }, [tokenBalance]);
 
   useEffect(() => {
-    if (!connected && activeTab === "balance") {
+    if (!connected) {
       setActiveTab("stake");
     }
-  }, [connected, activeTab]);
+  }, [connected]);
 
   function onStake(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -253,7 +257,7 @@ export default function VaultPage() {
           setPusdBalance((b) => b - value);
           setStakeAmount("");
           setStakeStep("idle");
-          setActiveTab("balance");
+          setActiveTab("stake");
           setTransactions((tx) => [
             ...tx,
             { type: "Mint", amount: value, timestamp: Date.now() },
@@ -292,7 +296,7 @@ export default function VaultPage() {
         setPusdBalance((b) => b + value);
         setRedeemAmount("");
         setRedeemStep("idle");
-        setActiveTab("balance");
+        setActiveTab("stake");
         setTransactions((tx) => [
           ...tx,
           { type: "Redeem", amount: value, timestamp: Date.now() },
@@ -362,51 +366,120 @@ export default function VaultPage() {
           </div>
         </div>
 
-        {transactions.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Transactions</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-muted">
-                  <TableRow className="border-muted">
-                    <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead className="text-right">Amount (pUSD)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {transactions
-                    .slice()
-                    .sort((a, b) => b.timestamp - a.timestamp)
-                    .map((tx, i) => (
-                      <TableRow key={i} className="border-muted">
-                        <TableCell>
-                          {new Date(tx.timestamp).toLocaleString(undefined, {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
-                        </TableCell>
-                        <TableCell>{tx.type}</TableCell>
-                        <TableCell className="text-right">
-                          {tx.amount.toLocaleString()} pUSD
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
+
 
         <Tabs defaultValue="overview" className="flex flex-col gap-6">
           <TabsList className="mb-4">
+            {connected && tokenBalance > 0 && (
+              <TabsTrigger value="position">My Position</TabsTrigger>
+            )}
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="performance">Performance</TabsTrigger>
             <TabsTrigger value="risk">Risk</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
+
+          {connected && tokenBalance > 0 && (
+            <TabsContent value="position" className="flex flex-col gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Balance</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center gap-2 text-2xl font-bold">
+                    {"$" + dollarBalance.toFixed(2)}
+                    <span className="animate-pulse rounded-full bg-green-500 size-2" />
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {tokenBalance.toFixed(2)} MNV
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Earnings Projection</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <RechartsAreaChart
+                      data={earningsProjection}
+                      margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="earnings" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--green-500))" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="hsl(var(--green-500))" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="day" className="text-xs" />
+                      <YAxis className="text-xs" />
+                      <Tooltip
+                        contentStyle={{
+                          background: "hsl(var(--popover))",
+                          borderColor: "hsl(var(--border))",
+                          color: "hsl(var(--popover-foreground))",
+                        }}
+                        labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="earnings"
+                        stroke="hsl(var(--green-500))"
+                        fill="url(#earnings)"
+                      />
+                    </RechartsAreaChart>
+                  </ResponsiveContainer>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Projected 30d earnings</span>
+                      <span>{`$${monthlyEarnings.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Projected 1y earnings</span>
+                      <span>{`$${yearlyEarnings.toFixed(2)}`}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              {transactions.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Your Transactions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader className="bg-muted">
+                        <TableRow className="border-muted">
+                          <TableHead>Date</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead className="text-right">Amount (pUSD)</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {transactions
+                          .slice()
+                          .sort((a, b) => b.timestamp - a.timestamp)
+                          .map((tx, i) => (
+                            <TableRow key={i} className="border-muted">
+                              <TableCell>
+                                {new Date(tx.timestamp).toLocaleString(undefined, {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                })}
+                              </TableCell>
+                              <TableCell>{tx.type}</TableCell>
+                              <TableCell className="text-right">
+                                {tx.amount.toLocaleString()} pUSD
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          )}
 
           <TabsContent value="overview" className="flex flex-col gap-6">
             <Card>
@@ -709,33 +782,9 @@ export default function VaultPage() {
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-4">
-                {connected && tokenBalance > 0 && (
-                  <TabsTrigger value="balance">Balance</TabsTrigger>
-                )}
                 <TabsTrigger value="stake">Stake</TabsTrigger>
                 <TabsTrigger value="redeem">Redeem</TabsTrigger>
               </TabsList>
-              {connected && tokenBalance > 0 && (
-                <TabsContent value="balance" className="space-y-2">
-                  <div className="flex items-center gap-2 text-2xl font-bold">
-                    {"$" + dollarBalance.toFixed(2)}
-                    <span className="animate-pulse rounded-full bg-green-500 size-2" />
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {tokenBalance.toFixed(2)} MNV
-                  </div>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Projected 30d earnings</span>
-                      <span>{`$${monthlyEarnings.toFixed(2)}`}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Projected 1y earnings</span>
-                      <span>{`$${yearlyEarnings.toFixed(2)}`}</span>
-                    </div>
-                  </div>
-                </TabsContent>
-              )}
               <TabsContent value="stake">
                 <form className="space-y-4" onSubmit={onStake}>
                   <div className="space-y-2">

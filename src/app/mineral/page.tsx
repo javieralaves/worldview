@@ -45,6 +45,7 @@ import {
   ResponsiveContainer,
   RadialBarChart,
   RadialBar,
+  LabelList,
   PolarAngleAxis,
   Legend,
 } from "recharts";
@@ -99,7 +100,7 @@ const riskSummary = {
     "This vault carries a moderate level of credit risk. Based on third-party credit analysis by Cicada Partners, it falls between B2–B3 on the Moody’s scale. Assets in this range are considered speculative, but are often structured with strong recovery protections. Historically, similar assets have experienced ~7% default rates and ~58% recovery.",
 };
 
-const riskProfile = [
+const riskProfile: { title: string; score: number }[] = [
   { title: "Assets", score: 3 },
   { title: "Capital", score: 4 },
   { title: "Quality", score: 3 },
@@ -872,15 +873,13 @@ export default function VaultPage() {
                     endAngle={-270}
                   >
                     <PolarAngleAxis type="number" domain={[0, 5]} tick={false} />
-                    <RadialBar
-                      dataKey="score"
-                      label={{
-                        position: "inside",
-                        fill: "hsl(var(--primary-foreground))",
-                        formatter: (_: number, entry: { title: string }) => entry.title,
-                      }}
-                      background
-                    />
+                    <RadialBar dataKey="score" background>
+                      <LabelList
+                        dataKey="title"
+                        position="inside"
+                        fill="hsl(var(--primary-foreground))"
+                      />
+                    </RadialBar>
                   </RadialBarChart>
                 </ResponsiveContainer>
               </CardContent>

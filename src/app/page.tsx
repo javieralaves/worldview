@@ -121,7 +121,7 @@ export default function Home() {
                 <Line
                   type="monotone"
                   dataKey="tvl"
-                  stroke="hsl(var(--green-500))"
+                  stroke="hsl(var(--chart-2))"
                   strokeWidth={3}
                   dot={false}
                 />

@@ -43,6 +43,10 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
+  Legend,
 } from "recharts";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -95,42 +99,151 @@ const riskSummary = {
     "This vault carries a moderate level of credit risk. Based on third-party credit analysis by Cicada Partners, it falls between B2–B3 on the Moody’s scale. Assets in this range are considered speculative, but are often structured with strong recovery protections. Historically, similar assets have experienced ~7% default rates and ~58% recovery.",
 };
 
+const riskProfile = [
+  { title: "Assets", score: 3 },
+  { title: "Capital", score: 4 },
+  { title: "Quality", score: 3 },
+  { title: "Management", score: 2 },
+];
+
 const ratingScale = ["AAA", "AA", "A", "BBB", "BB", "B", "Caa"] as const;
 
-const ratingDescriptions: Record<(typeof ratingScale)[number], string> = {
-  AAA: "Highest quality", 
-  AA: "Very high quality", 
-  A: "High quality", 
-  BBB: "Medium grade", 
-  BB: "Speculative", 
-  B: "Highly speculative", 
-  Caa: "Poor standing",
-};
+const ratingData = ratingScale.map((r) => ({
+  name: r,
+  value: 1,
+  fill:
+    r.startsWith(riskSummary.moodys[0])
+      ? "hsl(var(--primary))"
+      : "hsl(var(--muted))",
+}));
 
-const riskFactors = [
+const riskBreakdown = [
   {
-    id: "asset",
-    title: "Asset Risk",
+    id: "assets",
+    title: "Assets",
+    score: 3,
     details: [
-      { label: "Diversification", score: "3/5" },
-      { label: "Liquidity", score: "2/5" },
-      { label: "Counterparty quality", score: "3/5" },
+      {
+        label: "Portfolio Diversification",
+        description: "Number of issuers and sector breadth",
+        score: "3/5",
+      },
+      {
+        label: "Credit Quality Distribution",
+        description: "Proportion of sub-investment grade loans",
+        score: "3/5",
+      },
+      {
+        label: "Asset Liquidity",
+        description: "Redemption predictability based on underlying liquidity",
+        score: "2/5",
+      },
+      {
+        label: "Custodian Credibility",
+        description: "Who holds/administers the assets",
+        score: "4/5",
+      },
+      {
+        label: "Currency Exposure",
+        description: "FX risk based on asset denomination",
+        score: "3/5",
+      },
     ],
   },
   {
-    id: "structure",
-    title: "Capital Structure Risk",
+    id: "capital",
+    title: "Capital",
+    score: 4,
     details: [
-      { label: "Leverage", score: "4/5" },
-      { label: "Seniority", score: "2/5" },
+      {
+        label: "Leverage Profile",
+        description: "Use of borrowing and derivatives",
+        score: "4/5",
+      },
+      {
+        label: "Seniority Mix",
+        description: "Share of first-lien vs. subordinated assets",
+        score: "3/5",
+      },
+      {
+        label: "Capital Quality",
+        description: "Nature and restrictions of LP base",
+        score: "4/5",
+      },
+      {
+        label: "Systemic Exposure",
+        description: "Ties to broader market or economic shocks",
+        score: "3/5",
+      },
+      {
+        label: "Capital Concentration",
+        description: "Dependence on a small number of investors",
+        score: "4/5",
+      },
     ],
   },
   {
-    id: "manager",
-    title: "Managerial Risk",
+    id: "quality",
+    title: "Quality",
+    score: 3,
     details: [
-      { label: "Track record", score: "3/5" },
-      { label: "Transparency", score: "2/5" },
+      {
+        label: "Track Record",
+        description: "Historical performance and reputation",
+        score: "3/5",
+      },
+      {
+        label: "Cash Yield",
+        description: "Net yield on portfolio over time",
+        score: "4/5",
+      },
+      {
+        label: "Growth Trends",
+        description: "CAGR and deployment speed",
+        score: "3/5",
+      },
+      {
+        label: "Strategic Moat",
+        description: "Issuer’s pricing power and market position",
+        score: "3/5",
+      },
+      {
+        label: "Complexity",
+        description: "Structural or legal idiosyncrasies that impact transparency",
+        score: "2/5",
+      },
+    ],
+  },
+  {
+    id: "management",
+    title: "Management",
+    score: 2,
+    details: [
+      {
+        label: "Incentive Alignment",
+        description: "Skin in the game, fee structure, and governance",
+        score: "2/5",
+      },
+      {
+        label: "Transparency Practices",
+        description: "Quality/frequency of reporting (NAV, factsheets, etc.)",
+        score: "3/5",
+      },
+      {
+        label: "Control Framework",
+        description: "Oversight mechanisms and reporting discipline",
+        score: "2/5",
+      },
+      {
+        label: "Reputation",
+        description: "Past controversies, fund family, market perception",
+        score: "2/5",
+      },
+      {
+        label: "Operational Maturity",
+        description: "Tech stack, investor servicing, and regulatory coverage",
+        score: "3/5",
+      },
     ],
   },
 ] as const;
@@ -712,7 +825,7 @@ export default function VaultPage() {
           <TabsContent value="risk" className="flex flex-col gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Risk Summary</CardTitle>
+                <CardTitle>Risk Profile</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 <div className="grid grid-cols-3 gap-4">
@@ -750,6 +863,26 @@ export default function VaultPage() {
                   </div>
                 </div>
                 <p>{riskSummary.narrative}</p>
+                <ResponsiveContainer width="100%" height={200}>
+                  <RadialBarChart
+                    innerRadius="20%"
+                    outerRadius="90%"
+                    data={riskProfile}
+                    startAngle={90}
+                    endAngle={-270}
+                  >
+                    <PolarAngleAxis type="number" domain={[0, 5]} tick={false} />
+                    <RadialBar
+                      dataKey="score"
+                      label={{
+                        position: "inside",
+                        fill: "hsl(var(--primary-foreground))",
+                        formatter: (_: number, entry: { title: string }) => entry.title,
+                      }}
+                      background
+                    />
+                  </RadialBarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
@@ -758,43 +891,40 @@ export default function VaultPage() {
                 <CardTitle>Rating Spectrum</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="relative h-6">
-                  <div className="h-2 bg-muted rounded-full" />
-                  <div
-                    className="absolute top-0 -mt-1 size-3 rounded-full bg-primary"
-                    style={{ left: `${(ratingScale.indexOf("B") / (ratingScale.length - 1)) * 100}%` }}
-                  />
-                  {ratingScale.map((r) => (
-                    <Tooltip key={r}>
-                      <TooltipTrigger asChild>
-                        <span
-                          className="absolute -translate-x-1/2 top-2 text-[10px] cursor-help"
-                          style={{ left: `${(ratingScale.indexOf(r) / (ratingScale.length - 1)) * 100}%` }}
-                        >
-                          {r}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>{ratingDescriptions[r]}</TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
+                <ResponsiveContainer width="100%" height={220}>
+                  <RadialBarChart
+                    innerRadius="30%"
+                    outerRadius="100%"
+                    data={ratingData}
+                    startAngle={90}
+                    endAngle={-270}
+                  >
+                    <RadialBar dataKey="value" background />
+                    <Legend />
+                  </RadialBarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Risk Factors</CardTitle>
+                <CardTitle>Risk Breakdown</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Accordion type="multiple" className="border rounded-md">
-                  {riskFactors.map((factor) => (
+                  {riskBreakdown.map((factor) => (
                     <AccordionItem key={factor.id} value={factor.id}>
                       <AccordionTrigger>{factor.title}</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-1 px-2">
                           {factor.details.map((d, i) => (
                             <li key={i} className="flex justify-between text-sm">
-                              <span>{d.label}</span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help">{d.label}</span>
+                                </TooltipTrigger>
+                                <TooltipContent>{d.description}</TooltipContent>
+                              </Tooltip>
                               <span className="text-muted-foreground">{d.score}</span>
                             </li>
                           ))}

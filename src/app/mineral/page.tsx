@@ -916,8 +916,8 @@ export default function VaultPage() {
                     <PolarRadiusAxis domain={[0, 5]} tick={false} />
                     <Radar
                       dataKey="score"
-                      fill="hsl(var(--chart-2))"
-                      stroke="hsl(var(--chart-2))"
+                      fill="var(--chart-2)"
+                      stroke="var(--chart-2)"
                       fillOpacity={0.6}
                     />
                   </RadarChart>

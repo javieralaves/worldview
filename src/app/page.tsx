@@ -91,13 +91,15 @@ export default function Home() {
             <CardTitle>Total Value Locked</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
-            <div
-              className={`text-sm ${
-                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-              }`}
-            >
-              {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
+            <div className="space-y-1">
+              <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
+              <div
+                className={`text-sm ${
+                  tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                }`}
+              >
+                {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <RechartsAreaChart
@@ -143,13 +145,15 @@ export default function Home() {
             <CardTitle>Tokenholders</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
-            <div
-              className={`text-sm ${
-                holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-              }`}
-            >
-              {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
+            <div className="space-y-1">
+              <div className="text-3xl font-bold">{tokenholders.toLocaleString()}</div>
+              <div
+                className={`text-sm ${
+                  holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"
+                }`}
+              >
+                {`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()} since launch`}
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <RechartsAreaChart

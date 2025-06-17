@@ -59,21 +59,21 @@ export default function Home() {
   }, []);
 
   const trending = [
-    { name: "Real Yield", assets: 5, return: 12.3, curator: "0xAlice", tvl: 3.2 },
-    { name: "Metals Basket", assets: 7, return: 9.8, curator: "0xBob", tvl: 2.4 },
-    { name: "Growth Mix", assets: 6, return: 8.1, curator: "0xCarol", tvl: 2.8 },
+    { name: "nTBILL", assets: 5, return: 12.3, curator: "0xAlice", tvl: 3.2 },
+    { name: "nALPHA", assets: 7, return: 9.8, curator: "0xBob", tvl: 2.4 },
+    { name: "nBASIS", assets: 6, return: 8.1, curator: "0xCarol", tvl: 2.8 },
   ];
 
   const curators = [
-    { name: "Alice", return: 8.2, aum: 12.4 },
-    { name: "Bob", return: 7.6, aum: 9.1 },
-    { name: "Carol", return: 6.9, aum: 8.7 },
+    { name: "BlackRock", return: 8.2, aum: 12.4 },
+    { name: "Cicada Partners", return: 7.6, aum: 9.1 },
+    { name: "Simplify", return: 6.9, aum: 8.7 },
   ];
 
   const assets = [
-    { name: "Mineral", performance: 8.7, tvl: 5.0, yield: 8.7 },
-    { name: "Agriculture", performance: 6.1, tvl: 3.2, yield: 6.0 },
-    { name: "Real Estate", performance: 7.2, tvl: 4.1, yield: 7.1 },
+    { name: "Mineral Vault", performance: 8.7, tvl: 5.0, yield: 8.7 },
+    { name: "Invesco iSNR", performance: 6.1, tvl: 3.2, yield: 6.0 },
+    { name: "Kasu", performance: 7.2, tvl: 4.1, yield: 7.1 },
   ];
 
   const tvlDelta = tvl - 20;

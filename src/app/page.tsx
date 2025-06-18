@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { VaultCard } from "@/components/vault-card";
+import { HowNestWorksCard } from "@/components/how-nest-works";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -210,6 +211,10 @@ export default function Home() {
             );
           })}
         </div>
+      </section>
+
+      <section>
+        <HowNestWorksCard />
       </section>
     </div>
   );

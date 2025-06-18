@@ -2,33 +2,25 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LineChart as RechartsLineChart, Line, ResponsiveContainer } from "recharts";
 
-const history = [
-  { month: "Jan", tvl: 1 },
-  { month: "Feb", tvl: 2 },
-  { month: "Mar", tvl: 3 },
-  { month: "Apr", tvl: 4 },
-  { month: "May", tvl: 5 },
-  { month: "Jun", tvl: 6 },
-];
-
 interface VaultCardProps {
   icon: string;
   name: string;
   description: string;
   tvl: number;
   apy: number;
+  history: { month: string; tvl: number }[];
 }
 
-export function VaultCard({ icon, name, description, tvl, apy }: VaultCardProps) {
+export function VaultCard({ icon, name, description, tvl, apy, history }: VaultCardProps) {
   return (
-    <Card className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none py-0">
+    <Card className="flex-1 min-w-[16rem] bg-[#F5F5F5] shadow-none border-none py-0">
       <div className="p-6">
         <div className="flex items-center gap-2">
           <Avatar className="size-8">
             <AvatarImage src={icon} alt={`${name} icon`} />
             <AvatarFallback>{name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="text-[18px] leading-[24px] font-semibold">{name}</div>
+          <div className="text-[18px] leading-[24px] font-medium">{name}</div>
         </div>
         <p className="mt-3 text-muted-foreground leading-[24px]">{description}</p>
       </div>

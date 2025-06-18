@@ -44,6 +44,14 @@ export default function Home() {
       tvl: 3.2,
       apy: 12.3,
       icon: "/tokens/nest-treasuries.svg",
+      history: [
+        { month: "Jan", tvl: 1 },
+        { month: "Feb", tvl: 1.5 },
+        { month: "Mar", tvl: 2 },
+        { month: "Apr", tvl: 2.7 },
+        { month: "May", tvl: 3 },
+        { month: "Jun", tvl: 3.2 },
+      ],
     },
     {
       name: "Nest Alpha",
@@ -51,6 +59,14 @@ export default function Home() {
       tvl: 2.4,
       apy: 9.8,
       icon: "/tokens/nest-alpha.svg",
+      history: [
+        { month: "Jan", tvl: 0.5 },
+        { month: "Feb", tvl: 0.8 },
+        { month: "Mar", tvl: 0.8 },
+        { month: "Apr", tvl: 1.6 },
+        { month: "May", tvl: 2 },
+        { month: "Jun", tvl: 2.4 },
+      ],
     },
     {
       name: "Nest Credit",
@@ -58,6 +74,14 @@ export default function Home() {
       tvl: 2.8,
       apy: 8.1,
       icon: "/tokens/nest-credit.svg",
+      history: [
+        { month: "Jan", tvl: 1.2 },
+        { month: "Feb", tvl: 1.4 },
+        { month: "Mar", tvl: 1.9 },
+        { month: "Apr", tvl: 2.2 },
+        { month: "May", tvl: 2.5 },
+        { month: "Jun", tvl: 2.8 },
+      ],
     },
   ];
 
@@ -69,6 +93,14 @@ export default function Home() {
       tvl: 5.0,
       apy: 8.7,
       icon: "/tokens/mineral-vault.svg",
+      history: [
+        { month: "Jan", tvl: 2 },
+        { month: "Feb", tvl: 2 },
+        { month: "Mar", tvl: 2.5 },
+        { month: "Apr", tvl: 3.7 },
+        { month: "May", tvl: 4.2 },
+        { month: "Jun", tvl: 5 },
+      ],
     },
     {
       name: "iSNR",
@@ -76,6 +108,14 @@ export default function Home() {
       tvl: 3.2,
       apy: 6.0,
       icon: "/tokens/invesco-isnr.svg",
+      history: [
+        { month: "Jan", tvl: 1.5 },
+        { month: "Feb", tvl: 1.7 },
+        { month: "Mar", tvl: 1.7 },
+        { month: "Apr", tvl: 2 },
+        { month: "May", tvl: 2.5 },
+        { month: "Jun", tvl: 3.2 },
+      ],
     },
     {
       name: "mBASIS",
@@ -83,6 +123,14 @@ export default function Home() {
       tvl: 4.1,
       apy: 7.1,
       icon: "/tokens/mbasis.svg",
+      history: [
+        { month: "Jan", tvl: 1 },
+        { month: "Feb", tvl: 1.3 },
+        { month: "Mar", tvl: 1.7 },
+        { month: "Apr", tvl: 2.5 },
+        { month: "May", tvl: 3.6 },
+        { month: "Jun", tvl: 4.1 },
+      ],
     },
   ];
 
@@ -136,7 +184,7 @@ export default function Home() {
         <p className="max-w-[50%] text-muted-foreground">
           Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
         </p>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-6 pb-4">
           {compositions.map((c) => (
             <VaultCard key={c.name} {...c} />
           ))}
@@ -150,11 +198,11 @@ export default function Home() {
         <p className="max-w-[50%] text-muted-foreground">
           Stake directly into real-world, yield-generating assets—one vault, one token. It’s the simplest way to access onchain yield.
         </p>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-6 pb-4">
           {assets.map((a, i) => {
             const card = <VaultCard key={a.name} {...a} />;
             return i === 0 ? (
-              <Link href="/mineral" className="shrink-0" key={a.name}>
+              <Link href="/mineral" className="flex-1" key={a.name}>
                 {card}
               </Link>
             ) : (

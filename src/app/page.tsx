@@ -58,11 +58,6 @@ export default function Home() {
     { name: "nBASIS", assets: 6, return: 8.1, curator: "0xCarol", tvl: 2.8 },
   ];
 
-  const curators = [
-    { name: "BlackRock", return: 8.2, aum: 12.4 },
-    { name: "Cicada Partners", return: 7.6, aum: 9.1 },
-    { name: "Simplify", return: 6.9, aum: 8.7 },
-  ];
 
   const assets = [
     { name: "Mineral Vault", performance: 8.7, tvl: 5.0, yield: 8.7 },
@@ -130,10 +125,13 @@ export default function Home() {
         </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold">Trending compositions</h2>
+        <h2 className="text-xl font-bold">Compositions</h2>
+        <p className="max-w-[50%] text-muted-foreground">
+          Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
+        </p>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {trending.map((t) => (
-            <Card key={t.name} className="min-w-[16rem] shrink-0">
+            <Card key={t.name} className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none">
               <CardHeader className="flex items-center gap-2 pb-2">
                 <Avatar>
                   <AvatarFallback>{t.name.charAt(0)}</AvatarFallback>
@@ -153,34 +151,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold">Top curators</h2>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {curators.map((c) => (
-            <Card key={c.name} className="min-w-[16rem] shrink-0">
-              <CardHeader className="flex items-center gap-2 pb-2">
-                <Avatar>
-                  <AvatarFallback>{c.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle className="text-base">{c.name}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-1 text-sm">
-                <div>30d avg {c.return}%</div>
-                <div>AUM ${c.aum}M</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold">Popular assets</h2>
+        <h2 className="text-xl font-bold">Single Assets</h2>
+        <p className="max-w-[50%] text-muted-foreground">
+          Stake directly into real-world, yield-generating assets—one vault, one token. It’s the simplest way to access onchain yield.
+        </p>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {assets.map((a, i) => {
             const card = (
-              <Card className="min-w-[16rem] shrink-0" key={a.name}>
+              <Card className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none" key={a.name}>
                 <CardHeader className="flex items-center gap-2 pb-2">
                   <Avatar>
                     <AvatarFallback>{a.name.charAt(0)}</AvatarFallback>

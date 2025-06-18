@@ -19,11 +19,7 @@ import {
 
 export default function Home() {
   const [tvl, setTvl] = useState(20);
-  const [tokenholders, setTokenholders] = useState(1000);
-  const volume = 6.2;
-  const volumeDelta = 0.5;
-  const avgApy = 7.9;
-  const apyDelta = 0.2;
+  // metrics for volume, APY and tokenholders were removed
 
   const tvlHistory = [
     { month: "Jan", tvl: 15 },
@@ -37,15 +33,11 @@ export default function Home() {
 
   useEffect(() => {
     const targetTvl = 37.5; // total TVL in millions
-    const targetHolders = 1350;
     let currentTvl = 20;
-    let currentHolders = 1000;
     const id = setInterval(() => {
       currentTvl = Math.min(currentTvl + 0.25, targetTvl);
-      currentHolders = Math.min(currentHolders + 2, targetHolders);
       setTvl(currentTvl);
-      setTokenholders(currentHolders);
-      if (currentTvl >= targetTvl && currentHolders >= targetHolders) {
+      if (currentTvl >= targetTvl) {
         clearInterval(id);
       }
     }, 500);
@@ -66,45 +58,28 @@ export default function Home() {
   ];
 
   const tvlDelta = tvl - 20;
-  const holderDelta = tokenholders - 1000;
 
   return (
     <div className="space-y-12 p-6 md:p-10 max-w-[1080px] mx-auto">
 
-      <div className="flex flex-col sm:flex-row gap-6 justify-between">
-        <div className="space-y-1 flex-1">
-          <div className="text-xs text-muted-foreground">1D Volume</div>
-          <div className="text-xl font-bold">{`$${volume.toFixed(1)}M`}</div>
-          <div className={`text-sm ${volumeDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${volumeDelta >= 0 ? "+" : ""}${volumeDelta.toFixed(1)}%`}</div>
-        </div>
-        <div className="space-y-1 flex-1">
-          <div className="text-xs text-muted-foreground">Average APY</div>
-          <div className="text-xl font-bold">{avgApy}%</div>
-          <div className={`text-sm ${apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${apyDelta >= 0 ? "+" : ""}${apyDelta.toFixed(1)}%`}</div>
-        </div>
-        <div className="space-y-1 flex-1">
-          <div className="text-xs text-muted-foreground">Total Tokenholders</div>
-          <div className="text-xl font-bold">{tokenholders.toLocaleString()}</div>
-          <div className={`text-sm ${holderDelta >= 0 ? "text-green-500" : "text-muted-foreground"}`}>{`${holderDelta >= 0 ? "+" : ""}${holderDelta.toLocaleString()}`}</div>
-        </div>
-      </div>
+      {/* metrics strip removed */}
       <section className="space-y-4">
-          <h2 className="text-xl font-bold">Total Value Locked</h2>
-          <div className="space-y-1">
-            <div className="text-3xl font-bold">{`$${tvl.toFixed(1)}M`}</div>
-            <div
-              className={`text-sm ${
-                tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
-              }`}
-            >
+        <h2 className="text-xl font-bold">Nest TVL</h2>
+        <div className="bg-[#D9DFCF] rounded-[24px] p-6">
+          <div className="space-y-[12px]">
+            <div className="text-[60px] leading-[72px] font-medium text-[#030301]">
+              {`$${tvl.toFixed(1)}M`}
+            </div>
+            <div className="text-[18px] leading-[28px] text-[#155538]">
               {`${tvlDelta >= 0 ? "+" : ""}${tvlDelta.toFixed(1)}M since launch`}
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <RechartsLineChart
-              data={tvlHistory}
-              margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
-            >
+          <div className="mt-[64px]">
+            <ResponsiveContainer width="100%" height={200}>
+              <RechartsLineChart
+                data={tvlHistory}
+                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+              >
                 <Tooltip
                   contentStyle={{
                     background: "#000",
@@ -116,13 +91,16 @@ export default function Home() {
                 <Line
                   type="monotone"
                   dataKey="tvl"
-                  stroke="var(--chart-2)"
-                  strokeWidth={4}
+                  stroke="#47644C"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
                   dot={false}
                 />
               </RechartsLineChart>
-          </ResponsiveContainer>
-        </section>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </section>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold">Compositions</h2>

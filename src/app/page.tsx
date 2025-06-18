@@ -182,7 +182,7 @@ export default function Home() {
 
       <section className="space-y-4">
         <h2 className="text-[32px] leading-[40px] font-medium">Compositions</h2>
-        <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground">
+      <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground mb-10">
           Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
         </p>
         <div className="flex gap-6 pb-4">
@@ -196,7 +196,7 @@ export default function Home() {
 
       <section className="space-y-4">
         <h2 className="text-[32px] leading-[40px] font-medium">Single Assets</h2>
-        <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground">
+      <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground mb-10">
           Stake directly into real-world, yield-generating assets—one vault, one token. It’s the simplest way to access onchain yield.
         </p>
         <div className="flex gap-6 pb-4">

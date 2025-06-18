@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -45,16 +45,55 @@ export default function Home() {
   }, []);
 
   const trending = [
-    { name: "nTBILL", assets: 5, return: 12.3, curator: "0xAlice", tvl: 3.2 },
-    { name: "nALPHA", assets: 7, return: 9.8, curator: "0xBob", tvl: 2.4 },
-    { name: "nBASIS", assets: 6, return: 8.1, curator: "0xCarol", tvl: 2.8 },
+    {
+      name: "nTBILL",
+      assets: 5,
+      return: 12.3,
+      curator: "0xAlice",
+      tvl: 3.2,
+      icon: "/tokens/nest-treasuries.svg",
+    },
+    {
+      name: "nALPHA",
+      assets: 7,
+      return: 9.8,
+      curator: "0xBob",
+      tvl: 2.4,
+      icon: "/tokens/nest-alpha.svg",
+    },
+    {
+      name: "nCREDIT",
+      assets: 6,
+      return: 8.1,
+      curator: "0xCarol",
+      tvl: 2.8,
+      icon: "/tokens/nest-credit.svg",
+    },
   ];
 
 
   const assets = [
-    { name: "Mineral Vault", performance: 8.7, tvl: 5.0, yield: 8.7 },
-    { name: "Invesco iSNR", performance: 6.1, tvl: 3.2, yield: 6.0 },
-    { name: "Kasu", performance: 7.2, tvl: 4.1, yield: 7.1 },
+    {
+      name: "Mineral Vault",
+      performance: 8.7,
+      tvl: 5.0,
+      yield: 8.7,
+      icon: "/tokens/mineral-vault.svg",
+    },
+    {
+      name: "Invesco iSNR",
+      performance: 6.1,
+      tvl: 3.2,
+      yield: 6.0,
+      icon: "/tokens/invesco-isnr.svg",
+    },
+    {
+      name: "mBASIS",
+      performance: 7.2,
+      tvl: 4.1,
+      yield: 7.1,
+      icon: "/tokens/mbasis.svg",
+    },
   ];
 
   const tvlDelta = tvl - 20;
@@ -112,6 +151,7 @@ export default function Home() {
             <Card key={t.name} className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none">
               <CardHeader className="flex items-center gap-2 pb-2">
                 <Avatar>
+                  <AvatarImage alt={`${t.name} icon`} src={t.icon} />
                   <AvatarFallback>{t.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
@@ -142,6 +182,7 @@ export default function Home() {
               <Card className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none" key={a.name}>
                 <CardHeader className="flex items-center gap-2 pb-2">
                   <Avatar>
+                    <AvatarImage alt={`${a.name} icon`} src={a.icon} />
                     <AvatarFallback>{a.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <CardTitle className="text-base">{a.name}</CardTitle>

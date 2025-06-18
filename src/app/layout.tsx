@@ -1,5 +1,24 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import localFont from "next/font/local";
+
+const matter = localFont({
+  src: [
+    { path: "../../public/fonts/matter/Matter-Regular.otf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/matter/Matter-Medium.otf", weight: "500", style: "normal" },
+  ],
+  variable: "--font-matter",
+  display: "swap",
+});
+
+const chivoMono = localFont({
+  src: [
+    { path: "../../public/fonts/chivo-mono/ChivoMono-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/chivo-mono/ChivoMono-Medium.ttf", weight: "500", style: "normal" },
+  ],
+  variable: "--font-chivo-mono",
+  display: "swap",
+});
 import { WalletProvider } from "@/components/wallet-context";
 import { TopNav } from "@/components/top-nav";
 import { ThemeProvider } from "@/components/theme-context";
@@ -16,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${matter.variable} ${chivoMono.variable}`}> 
       <body className="antialiased font-sans">
         <ThemeProvider>
           <WalletProvider>

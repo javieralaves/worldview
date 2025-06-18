@@ -499,7 +499,7 @@ export default function VaultPage() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-2xl font-bold">Mineral Vault (MNV)</h1>
+          <h1 className="text-2xl font-medium">Mineral Vault (MNV)</h1>
           <p className="text-muted-foreground">
             Tokenized exposure to royalty fees from U.S. mineral and oil extraction.
           </p>
@@ -517,7 +517,7 @@ export default function VaultPage() {
           <div className="flex flex-col sm:flex-row gap-6 my-4">
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">TVL</div>
-              <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
+              <div className="text-3xl font-medium">{`$${tvl.toLocaleString()}M`}</div>
               <div
                 className={`text-sm ${
                   tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -528,7 +528,7 @@ export default function VaultPage() {
             </div>
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">Price</div>
-              <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+              <div className="text-3xl font-medium">{`$${price.toFixed(2)}`}</div>
               <div
                 className={`text-sm ${
                   priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -539,7 +539,7 @@ export default function VaultPage() {
             </div>
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">APY</div>
-              <div className="text-3xl font-bold">{currentApy}%</div>
+              <div className="text-3xl font-medium">{currentApy}%</div>
               <div
                 className={`text-sm ${
                   apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -572,7 +572,7 @@ export default function VaultPage() {
                   <CardTitle>Balance</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <div className="flex items-center gap-2 text-2xl font-bold">
+                  <div className="flex items-center gap-2 text-2xl font-medium">
                     {"$" + dollarBalance.toFixed(2)}
                     <span className="animate-pulse rounded-full bg-green-500 size-2" />
                   </div>
@@ -724,7 +724,7 @@ export default function VaultPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-1">
-                  <div className="text-3xl font-bold">{`$${tvl.toLocaleString()}M`}</div>
+                  <div className="text-3xl font-medium">{`$${tvl.toLocaleString()}M`}</div>
                   <div
                     className={`text-sm ${
                       tvlDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -762,7 +762,7 @@ export default function VaultPage() {
                   </TabsList>
                   <TabsContent value="apy" className="space-y-4">
                     <div className="space-y-1">
-                      <div className="text-3xl font-bold">{currentApy}%</div>
+                      <div className="text-3xl font-medium">{currentApy}%</div>
                       <div
                         className={`text-sm ${
                           apyDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -804,7 +804,7 @@ export default function VaultPage() {
                   </TabsContent>
                   <TabsContent value="price" className="space-y-4">
                     <div className="space-y-1">
-                      <div className="text-3xl font-bold">{`$${price.toFixed(2)}`}</div>
+                      <div className="text-3xl font-medium">{`$${price.toFixed(2)}`}</div>
                       <div
                         className={`text-sm ${
                           priceDelta >= 0 ? "text-green-500" : "text-muted-foreground"
@@ -882,7 +882,7 @@ export default function VaultPage() {
                       </TooltipTrigger>
                       <TooltipContent>Low is safer, high is riskier.</TooltipContent>
                     </Tooltip>
-                    <div className="flex items-center gap-1 font-semibold">
+                    <div className="flex items-center gap-1 font-medium">
                       <span
                         className={`size-2 rounded-full ${riskSummary.level === "Low" ? "bg-green-500" : riskSummary.level === "Moderate" ? "bg-yellow-500" : "bg-red-500"}`}
                       />
@@ -896,7 +896,7 @@ export default function VaultPage() {
                       </TooltipTrigger>
                       <TooltipContent>Independent score from Cicada Partners. 1 is riskiest, 5 is safest.</TooltipContent>
                     </Tooltip>
-                    <div className="font-semibold">{riskSummary.cicadaScore}/5</div>
+                    <div className="font-medium">{riskSummary.cicadaScore}/5</div>
                   </div>
                   <div className="space-y-1">
                     <Tooltip>
@@ -905,7 +905,7 @@ export default function VaultPage() {
                       </TooltipTrigger>
                       <TooltipContent>Approximate placement on Moody&apos;s corporate rating scale.</TooltipContent>
                     </Tooltip>
-                    <div className="font-semibold">{riskSummary.moodys}</div>
+                    <div className="font-medium">{riskSummary.moodys}</div>
                   </div>
                 </div>
                 <p>{riskSummary.narrative}</p>

@@ -21,7 +21,7 @@ export function TopNav() {
   const { theme, toggleTheme } = useTheme();
   return (
     <nav className="border-b px-6 py-4 flex justify-between items-center">
-      <Link href="/" className="font-bold text-lg">
+      <Link href="/" className="font-medium text-lg">
         Nest
       </Link>
       {connected ? (

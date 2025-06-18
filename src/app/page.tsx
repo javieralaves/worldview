@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* metrics strip removed */}
       <section className="space-y-4">
-        <h2 className="text-xl font-bold">Nest TVL</h2>
+        <h2 className="text-xl font-medium">Nest TVL</h2>
         <div className="bg-[#D9DFCF] rounded-[24px] p-6">
           <div className="space-y-[12px]">
             <div className="text-[60px] leading-[72px] font-medium text-[#030301]">
@@ -103,7 +103,7 @@ export default function Home() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold">Compositions</h2>
+        <h2 className="text-xl font-medium">Compositions</h2>
         <p className="max-w-[50%] text-muted-foreground">
           Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
         </p>
@@ -132,7 +132,7 @@ export default function Home() {
 
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold">Single Assets</h2>
+        <h2 className="text-xl font-medium">Single Assets</h2>
         <p className="max-w-[50%] text-muted-foreground">
           Stake directly into real-world, yield-generating assets—one vault, one token. It’s the simplest way to access onchain yield.
         </p>

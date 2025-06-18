@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { VaultCard } from "@/components/vault-card";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -44,29 +37,26 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-  const trending = [
+  const compositions = [
     {
-      name: "nTBILL",
-      assets: 5,
-      return: 12.3,
-      curator: "0xAlice",
+      name: "Nest Treasuries",
+      description: "Highest Quality Treasury Bills",
       tvl: 3.2,
+      apy: 12.3,
       icon: "/tokens/nest-treasuries.svg",
     },
     {
-      name: "nALPHA",
-      assets: 7,
-      return: 9.8,
-      curator: "0xBob",
+      name: "Nest Alpha",
+      description: "Tokenized Real World Assets",
       tvl: 2.4,
+      apy: 9.8,
       icon: "/tokens/nest-alpha.svg",
     },
     {
-      name: "nCREDIT",
-      assets: 6,
-      return: 8.1,
-      curator: "0xCarol",
+      name: "Nest Credit",
+      description: "Institutional-Grade Private Credit",
       tvl: 2.8,
+      apy: 8.1,
       icon: "/tokens/nest-credit.svg",
     },
   ];
@@ -75,23 +65,23 @@ export default function Home() {
   const assets = [
     {
       name: "Mineral Vault",
-      performance: 8.7,
+      description: "U.S. Mineral & Oil Royalties",
       tvl: 5.0,
-      yield: 8.7,
+      apy: 8.7,
       icon: "/tokens/mineral-vault.svg",
     },
     {
-      name: "Invesco iSNR",
-      performance: 6.1,
+      name: "iSNR",
+      description: "Senior Secured Loans",
       tvl: 3.2,
-      yield: 6.0,
+      apy: 6.0,
       icon: "/tokens/invesco-isnr.svg",
     },
     {
       name: "mBASIS",
-      performance: 7.2,
+      description: "Crypto Basis Trading",
       tvl: 4.1,
-      yield: 7.1,
+      apy: 7.1,
       icon: "/tokens/mbasis.svg",
     },
   ];
@@ -147,24 +137,8 @@ export default function Home() {
           Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
         </p>
         <div className="flex gap-4 overflow-x-auto pb-4">
-          {trending.map((t) => (
-            <Card key={t.name} className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none">
-              <CardHeader className="flex items-center gap-2 pb-2">
-                <Avatar>
-                  <AvatarImage alt={`${t.name} icon`} src={t.icon} />
-                  <AvatarFallback>{t.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <CardTitle className="text-base">{t.name}</CardTitle>
-                  <CardDescription>{t.assets} assets</CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-1 text-sm">
-                <div>30d return {t.return}%</div>
-                <div>Curator {t.curator}</div>
-                <div>TVL ${t.tvl}M</div>
-              </CardContent>
-            </Card>
+          {compositions.map((c) => (
+            <VaultCard key={c.name} {...c} />
           ))}
         </div>
       </section>
@@ -178,22 +152,7 @@ export default function Home() {
         </p>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {assets.map((a, i) => {
-            const card = (
-              <Card className="min-w-[16rem] shrink-0 bg-[#F5F5F5] shadow-none border-none" key={a.name}>
-                <CardHeader className="flex items-center gap-2 pb-2">
-                  <Avatar>
-                    <AvatarImage alt={`${a.name} icon`} src={a.icon} />
-                    <AvatarFallback>{a.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="text-base">{a.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-1 text-sm">
-                  <div>30d {a.performance}%</div>
-                  <div>TVL ${a.tvl}M</div>
-                  <div>Yield {a.yield}%</div>
-                </CardContent>
-              </Card>
-            );
+            const card = <VaultCard key={a.name} {...a} />;
             return i === 0 ? (
               <Link href="/mineral" className="shrink-0" key={a.name}>
                 {card}

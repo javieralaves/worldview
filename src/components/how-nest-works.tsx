@@ -5,9 +5,9 @@ export function HowNestWorksCard() {
     "As the assets generate yield, your vault token increases in value.",
   ];
   return (
-    <div className="bg-[#F5F5F5] p-8 rounded-[24px]">
+    <div className="bg-[#F5F5F5] p-6 sm:p-8 rounded-[24px]">
       <h2 className="text-[24px] leading-[32px] font-medium">How Nest Works</h2>
-      <div className="mt-8 grid grid-cols-3 px-8 gap-12">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 px-4 sm:px-8 gap-6 sm:gap-12">
         {steps.map((text, idx) => (
           <div
             key={idx}

@@ -13,7 +13,7 @@ interface VaultCardProps {
 
 export function VaultCard({ icon, name, description, tvl, apy, history }: VaultCardProps) {
   return (
-    <Card className="flex-1 min-w-[16rem] bg-[#F5F5F5] shadow-none border-none py-0">
+    <Card className="flex-1 w-full sm:min-w-[16rem] bg-[#F5F5F5] shadow-none border-none py-0">
       <div className="p-6">
         <div className="flex items-center gap-2">
           <Avatar className="size-8">

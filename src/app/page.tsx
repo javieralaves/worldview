@@ -185,7 +185,7 @@ export default function Home() {
       <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground mb-10">
           Stake into institutional-grade, professional curated real-world asset strategies through a single onchain token. Each vault follows a clear strategy—balancing risk, yield, and liquidity—so you get diversified exposure without managing individual assets.
         </p>
-        <div className="flex gap-6 pb-4">
+        <div className="grid gap-6 pb-4 sm:grid-cols-2 lg:grid-cols-3">
           {compositions.map((c) => (
             <VaultCard key={c.name} {...c} />
           ))}
@@ -199,11 +199,11 @@ export default function Home() {
       <p className="text-[20px] leading-[28px] font-medium max-w-[640px] text-muted-foreground mb-10">
           Stake directly into real-world, yield-generating assets—one vault, one token. It’s the simplest way to access onchain yield.
         </p>
-        <div className="flex gap-6 pb-4">
+        <div className="grid gap-6 pb-4 sm:grid-cols-2 lg:grid-cols-3">
           {assets.map((a, i) => {
             const card = <VaultCard key={a.name} {...a} />;
             return i === 0 ? (
-              <Link href="/mineral" className="flex-1" key={a.name}>
+              <Link href="/mineral" className="block w-full" key={a.name}>
                 {card}
               </Link>
             ) : (

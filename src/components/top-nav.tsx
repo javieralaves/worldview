@@ -20,7 +20,7 @@ export function TopNav() {
   const { connected, connect, disconnect } = useWallet();
   const { theme, toggleTheme } = useTheme();
   return (
-    <nav className="border-b px-6 flex items-center justify-between h-[72px]">
+    <nav className="border-b px-4 md:px-6 flex items-center justify-between h-16 md:h-[72px]">
       <Link href="/" className="block">
         <img
           src="/nest-logo.svg"

@@ -46,6 +46,12 @@ export default function Home() {
       apy: 12.3,
       tokenValue: 1.12,
       icon: "/tokens/nest-treasuries.svg",
+      partnerLogos: [
+        "/partners/anemoy.svg",
+        "/partners/centrifuge.svg",
+        "/partners/m.svg",
+        "/partners/superstate.svg",
+      ],
     },
     {
       name: "Nest Alpha",
@@ -54,6 +60,13 @@ export default function Home() {
       apy: 9.8,
       tokenValue: 0.98,
       icon: "/tokens/nest-alpha.svg",
+      partnerLogos: [
+        "/partners/superstate.svg",
+        "/partners/midas.svg",
+        "/partners/credbull.svg",
+        "/partners/mineral.svg",
+        "/partners/whinfell.svg",
+      ],
     },
     {
       name: "Nest Credit",
@@ -62,6 +75,14 @@ export default function Home() {
       apy: 8.1,
       tokenValue: 1.05,
       icon: "/tokens/nest-credit.svg",
+      partnerLogos: [
+        "/partners/midas.svg",
+        "/partners/goldfinch.svg",
+        "/partners/anemoy.svg",
+        "/partners/centrifuge.svg",
+        "/partners/m.svg",
+        "/partners/superstate.svg",
+      ],
     },
   ];
 

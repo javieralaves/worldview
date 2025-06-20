@@ -28,27 +28,32 @@ export function TopNav() {
           className="w-8 h-8"
         />
       </Link>
-      {connected ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar>
-              <AvatarImage alt="avatar" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={toggleTheme}>
-              {theme === "light" ? "Dark Theme" : "Light Theme"}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={disconnect}>
-              Disconnect
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Button onClick={connect}>Connect</Button>
-      )}
+      <div className="flex items-center gap-2">
+        <Button asChild variant="secondary">
+          <Link href="/admin">Admin</Link>
+        </Button>
+        {connected ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage alt="avatar" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={toggleTheme}>
+                {theme === "light" ? "Dark Theme" : "Light Theme"}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={disconnect}>
+                Disconnect
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button onClick={connect}>Connect</Button>
+        )}
+      </div>
     </nav>
   );
 }

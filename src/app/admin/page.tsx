@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { formatDistanceToNow, differenceInDays, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
@@ -33,7 +36,7 @@ import {
 import {
   LineChart as RechartsLineChart,
   Line,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
 
@@ -70,6 +73,7 @@ const secondaryKpis: KPI[] = [
 ];
 
 interface Vault {
+  icon: string;
   name: string;
   type: "Asset" | "Composition";
   curator: string;
@@ -83,6 +87,7 @@ interface Vault {
 
 const vaults: Vault[] = [
   {
+    icon: "/tokens/mineral-vault.svg",
     name: "Mineral Vault",
     type: "Asset",
     curator: "Nest",
@@ -90,10 +95,11 @@ const vaults: Vault[] = [
     tvl: 5.0,
     apy: 8.7,
     drift: 0.1,
-    rebalance: "2024-06-15",
+    rebalance: "2025-06-15",
     pending: 10000,
   },
   {
+    icon: "/tokens/nest-treasuries.svg",
     name: "Nest Treasuries",
     type: "Composition",
     curator: "Nest",
@@ -101,10 +107,11 @@ const vaults: Vault[] = [
     tvl: 3.2,
     apy: 12.3,
     drift: -0.05,
-    rebalance: "2024-06-18",
+    rebalance: "2025-06-18",
     pending: 5000,
   },
   {
+    icon: "/tokens/nest-alpha.svg",
     name: "Nest Alpha",
     type: "Composition",
     curator: "Nest",
@@ -112,10 +119,11 @@ const vaults: Vault[] = [
     tvl: 2.4,
     apy: 9.8,
     drift: 0.02,
-    rebalance: "2024-06-12",
+    rebalance: "2025-06-12",
     pending: 1200,
   },
   {
+    icon: "/tokens/nest-credit.svg",
     name: "Nest Credit",
     type: "Composition",
     curator: "Nest",
@@ -123,7 +131,7 @@ const vaults: Vault[] = [
     tvl: 2.8,
     apy: 8.1,
     drift: -0.03,
-    rebalance: "2024-06-10",
+    rebalance: "2025-06-08",
     pending: 7500,
   },
 ];
@@ -171,48 +179,75 @@ export default function AdminPage() {
     return vaults.filter((v) => (filter === "All" ? true : v.type === filter));
   }, [filter]);
 
+  const headerWithTooltip = (label: string, tip: string) => (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span>{label}</span>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={4}>{tip}</TooltipContent>
+    </Tooltip>
+  );
+
   const columns: ColumnDef<Vault>[] = [
     {
       accessorKey: "name",
-      header: "Vault Name",
+      header: () => headerWithTooltip("Vault Name", "Name of the vault"),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Avatar className="size-6">
+            <AvatarImage src={row.original.icon} alt="" />
+            <AvatarFallback>{row.getValue<string>("name").charAt(0)}</AvatarFallback>
+          </Avatar>
+          {row.getValue<string>("name")}
+        </div>
+      ),
     },
     {
       accessorKey: "type",
-      header: "Type",
+      header: () => headerWithTooltip("Type", "Vault type"),
     },
     {
       accessorKey: "curator",
-      header: "Curator",
+      header: () => headerWithTooltip("Curator", "Vault manager"),
     },
     {
       accessorKey: "price",
-      header: "Token Price",
+      header: () => headerWithTooltip("Token Price", "Price per vault token"),
       cell: ({ row }) => `$${row.getValue<number>("price").toFixed(2)}`,
     },
     {
       accessorKey: "tvl",
-      header: "TVL",
+      header: () => headerWithTooltip("TVL", "Total value locked"),
       cell: ({ row }) => `$${row.getValue<number>("tvl").toLocaleString()}M`,
     },
     {
       accessorKey: "apy",
-      header: "APY",
+      header: () => headerWithTooltip("APY", "Annual percentage yield"),
       cell: ({ row }) => `${row.getValue<number>("apy")}%`,
     },
     {
       accessorKey: "drift",
-      header: "Drift",
-      cell: ({ row }) => `${(row.getValue<number>("drift") * 100).toFixed(1)}%`,
+      header: () => headerWithTooltip("Drift", "Backing vs token price"),
+      cell: ({ row }) => `${(Math.abs(row.getValue<number>("drift")) * 100).toFixed(1)}%`,
     },
     {
       accessorKey: "rebalance",
-      header: "Last Rebalance",
-      cell: ({ row }) =>
-        new Date(row.getValue<string>("rebalance")).toLocaleDateString(),
+      header: () => headerWithTooltip("Last Rebalance", "When vault was rebalanced"),
+      cell: ({ row }) => {
+        const date = parseISO(row.getValue<string>("rebalance"));
+        const diff = formatDistanceToNow(date, { addSuffix: true });
+        const stale = differenceInDays(Date.now(), date) > 10;
+        return (
+          <div className="flex items-center gap-1">
+            {diff}
+            {stale && <span className="size-2 rounded-full bg-yellow-400" />}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "pending",
-      header: "Pending Redemptions Volume",
+      header: () => headerWithTooltip("Pending Redemptions", "Pending withdrawals"),
       cell: ({ row }) =>
         `${row.getValue<number>("pending").toLocaleString()} pUSD`,
     },
@@ -250,7 +285,7 @@ export default function AdminPage() {
             <div className="mt-[64px]">
               <ResponsiveContainer width="100%" height={200}>
                 <RechartsLineChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <Tooltip
+                  <RechartsTooltip
                     contentStyle={{ background: "#000", borderColor: "#000", color: "#fff" }}
                     labelStyle={{ color: "#fff" }}
                   />
@@ -283,7 +318,7 @@ export default function AdminPage() {
             <div className="mt-[64px]">
               <ResponsiveContainer width="100%" height={200}>
                 <RechartsLineChart data={apyHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <Tooltip
+                  <RechartsTooltip
                     contentStyle={{ background: "#000", borderColor: "#000", color: "#fff" }}
                     labelStyle={{ color: "#fff" }}
                   />

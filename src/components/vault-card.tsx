@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LineChart as RechartsLineChart, Line, ResponsiveContainer } from "recharts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Bolt } from "lucide-react";
 
 interface VaultCardProps {
   icon: string;
@@ -8,10 +10,19 @@ interface VaultCardProps {
   description: string;
   tvl: number;
   apy: number;
-  history: { month: string; tvl: number }[];
+  tokenValue: number;
 }
 
-export function VaultCard({ icon, name, description, tvl, apy, history }: VaultCardProps) {
+export function VaultCard({ icon, name, description, tvl, apy, tokenValue }: VaultCardProps) {
+  const [animatedValue, setAnimatedValue] = useState(tokenValue);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setAnimatedValue((v) => parseFloat((v + 0.02).toFixed(2)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <Card className="flex-1 w-full sm:min-w-[16rem] bg-[#F5F5F5] shadow-none border-none py-0">
       <div className="p-6">
@@ -24,12 +35,17 @@ export function VaultCard({ icon, name, description, tvl, apy, history }: VaultC
         </div>
         <p className="mt-3 text-muted-foreground leading-[24px]">{description}</p>
       </div>
-      <div className="mt-12">
-        <ResponsiveContainer width="100%" height={80}>
-          <RechartsLineChart data={history} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <Line type="monotone" dataKey="tvl" stroke="currentColor" strokeWidth={2} dot={false} />
-          </RechartsLineChart>
-        </ResponsiveContainer>
+      <div className="px-6 mt-6">
+        <div className="text-[16px] leading-[24px] text-muted-foreground">Token Value</div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="mt-1 flex items-center gap-1 text-[20px] leading-[32px] font-semibold">
+              {`$${animatedValue.toFixed(2)}`}
+              <Bolt className="size-4 fill-[#28A29C] stroke-none" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={4}>Generating real-world yield in real time</TooltipContent>
+        </Tooltip>
       </div>
       <div className="grid grid-cols-2 px-6 pt-6 pb-6">
         <div>

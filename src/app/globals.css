@@ -5,6 +5,14 @@
 :root {
   --font-matter: "Matter", sans-serif;
   --font-chivo-mono: "Chivo Mono", monospace;
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -132,4 +140,13 @@
 }
 [data-sonner-toaster][data-sonner-theme='dark'] [data-description] {
   color: hsl(var(--muted-foreground));
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

@@ -191,6 +191,26 @@ export default function AssetsPage() {
     { accessorKey: "redemption", header: headerCell("Redemption Duration"), meta: { label: "Redemption Duration" } },
   ];
 
+  const labels: Record<keyof AssetEntry, string> = {
+    name: "Asset name",
+    issuer: "Issuer name",
+    price: "Asset price",
+    priceSource: "Price source (URL)",
+    amountNest: "Amount on Nest",
+    amountUsd: "Amount in USD",
+    estApy: "Estimated APY",
+    currApy: "Current APY",
+    apyDiff: "APY Difference",
+    yieldReceived: "Yield Received 30D",
+    yieldExpected: "Yield Expected 30D",
+    yieldCycle: "Yield Payout Cycle",
+    lastPaid: "Last Paid",
+    nextPayout: "Next Payout Date",
+    jurisdiction: "Jurisdiction",
+    legal: "Legal Structure",
+    redemption: "Redemption Duration",
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -301,19 +321,22 @@ export default function AssetsPage() {
                 setFormData(null);
               }}
             >
-              {Object.entries(formData).map(([key, value]) => (
-                <div key={key} className="space-y-1">
-                  <label className="block text-sm font-medium capitalize">
-                    {key}
-                  </label>
-                  <Input
-                    value={String(value)}
-                    onChange={(e) =>
-                      setFormData({ ...formData, [key]: e.target.value })
-                    }
-                  />
-                </div>
-              ))}
+              {Object.entries(formData).map(([key, value]) => {
+                const label = labels[key as keyof AssetEntry] ?? key;
+                return (
+                  <div key={key} className="space-y-1">
+                    <label className="block text-sm font-medium">
+                      {label}
+                    </label>
+                    <Input
+                      value={String(value)}
+                      onChange={(e) =>
+                        setFormData({ ...formData, [key]: e.target.value })
+                      }
+                    />
+                  </div>
+                );
+              })}
               <Button type="submit">Save</Button>
             </form>
           )}

@@ -145,45 +145,50 @@ export default function AssetsPage() {
     );
 
   const columns: ColumnDef<AssetEntry>[] = [
-    { accessorKey: "name", header: headerCell("Asset name") },
-    { accessorKey: "issuer", header: headerCell("Issuer name") },
+    { accessorKey: "name", header: headerCell("Asset name"), meta: { label: "Asset name" } },
+    { accessorKey: "issuer", header: headerCell("Issuer name"), meta: { label: "Issuer name" } },
     {
       accessorKey: "price",
       header: headerCell("Asset price"),
+      meta: { label: "Asset price" },
       cell: ({ row }) => `$${row.getValue<number>("price").toFixed(2)}`,
     },
     {
       accessorKey: "priceSource",
       header: headerCell("Price source (URL)"),
+      meta: { label: "Price source (URL)" },
       cell: ({ row }) => (
         <Link href={row.getValue<string>("priceSource")}>{"Source"}</Link>
       ),
     },
-    { accessorKey: "amountNest", header: headerCell("Amount on Nest") },
-    { accessorKey: "amountUsd", header: headerCell("Amount in USD") },
+    { accessorKey: "amountNest", header: headerCell("Amount on Nest"), meta: { label: "Amount on Nest" } },
+    { accessorKey: "amountUsd", header: headerCell("Amount in USD"), meta: { label: "Amount in USD" } },
     {
       accessorKey: "estApy",
       header: headerCell("Estimated APY"),
+      meta: { label: "Estimated APY" },
       cell: ({ row }) => `${row.getValue<number>("estApy")}%`,
     },
     {
       accessorKey: "currApy",
       header: headerCell("Current APY"),
+      meta: { label: "Current APY" },
       cell: ({ row }) => `${row.getValue<number>("currApy")}%`,
     },
     {
       accessorKey: "apyDiff",
       header: headerCell("APY Difference"),
+      meta: { label: "APY Difference" },
       cell: ({ row }) => `${row.getValue<number>("apyDiff")}%`,
     },
-    { accessorKey: "yieldReceived", header: headerCell("Yield Received 30D") },
-    { accessorKey: "yieldExpected", header: headerCell("Yield Expected 30D") },
-    { accessorKey: "yieldCycle", header: headerCell("Yield Payout Cycle") },
-    { accessorKey: "lastPaid", header: headerCell("Last Paid") },
-    { accessorKey: "nextPayout", header: headerCell("Next Payout Date") },
-    { accessorKey: "jurisdiction", header: headerCell("Jurisdiction") },
-    { accessorKey: "legal", header: headerCell("Legal Structure") },
-    { accessorKey: "redemption", header: headerCell("Redemption Duration") },
+    { accessorKey: "yieldReceived", header: headerCell("Yield Received 30D"), meta: { label: "Yield Received 30D" } },
+    { accessorKey: "yieldExpected", header: headerCell("Yield Expected 30D"), meta: { label: "Yield Expected 30D" } },
+    { accessorKey: "yieldCycle", header: headerCell("Yield Payout Cycle"), meta: { label: "Yield Payout Cycle" } },
+    { accessorKey: "lastPaid", header: headerCell("Last Paid"), meta: { label: "Last Paid" } },
+    { accessorKey: "nextPayout", header: headerCell("Next Payout Date"), meta: { label: "Next Payout Date" } },
+    { accessorKey: "jurisdiction", header: headerCell("Jurisdiction"), meta: { label: "Jurisdiction" } },
+    { accessorKey: "legal", header: headerCell("Legal Structure"), meta: { label: "Legal Structure" } },
+    { accessorKey: "redemption", header: headerCell("Redemption Duration"), meta: { label: "Redemption Duration" } },
   ];
 
   const table = useReactTable({
@@ -221,7 +226,7 @@ export default function AssetsPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {table.getAllLeafColumns().map((column) => {
-                const label = column.columnDef.header as string;
+                const label = column.columnDef.meta?.label ?? column.id;
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -237,7 +242,7 @@ export default function AssetsPage() {
           </DropdownMenu>
         </div>
         <TabsContent value={view}>
-          <div className="max-w-full overflow-x-auto">
+          <div className="w-full overflow-x-auto">
             <Table>
               <TableHeader className="bg-muted">
                 {table.getHeaderGroups().map((hg) => (

@@ -483,7 +483,7 @@ export default function VaultPage() {
   }
 
   return (
-    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 max-w-[1080px] mx-auto">
+    <div className="p-6 md:p-10 grid md:grid-cols-[1fr_320px] gap-6 w-full mx-auto">
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
           <Breadcrumb>

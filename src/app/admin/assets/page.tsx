@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
   Table,
@@ -110,6 +111,44 @@ const pendingAssets: AssetEntry[] = [
     legal: "DAO",
     redemption: "-",
   },
+];
+
+const categories: { title: string; keys: (keyof AssetEntry)[] }[] = [
+  {
+    title: "Basic Info",
+    keys: ["name", "issuer", "price", "priceSource"],
+  },
+  {
+    title: "Position",
+    keys: ["amountNest", "amountUsd"],
+  },
+  {
+    title: "Yield & Performance",
+    keys: [
+      "estApy",
+      "currApy",
+      "apyDiff",
+      "yieldReceived",
+      "yieldExpected",
+      "yieldCycle",
+      "lastPaid",
+      "nextPayout",
+    ],
+  },
+  {
+    title: "Legal & Terms",
+    keys: ["jurisdiction", "legal", "redemption"],
+  },
+];
+
+const hiddenFields: (keyof AssetEntry)[] = [
+  "amountNest",
+  "amountUsd",
+  "currApy",
+  "apyDiff",
+  "yieldReceived",
+  "lastPaid",
+  "nextPayout",
 ];
 
 export default function AssetsPage() {
@@ -245,19 +284,28 @@ export default function AssetsPage() {
               <Button variant="outline">Columns</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {table.getAllLeafColumns().map((column) => {
-                const label = column.columnDef.meta?.label ?? column.id;
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    checked={column.getIsVisible()}
-                    onCheckedChange={column.toggleVisibility}
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    {label}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              {categories.map((cat) => (
+                <div key={cat.title} className="space-y-1">
+                  <DropdownMenuLabel className="font-semibold">
+                    {cat.title}
+                  </DropdownMenuLabel>
+                  {cat.keys.map((k) => {
+                    const column = table.getColumn(k);
+                    if (!column) return null;
+                    const label = labels[k];
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={k}
+                        checked={column.getIsVisible()}
+                        onCheckedChange={column.toggleVisibility}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {label}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+                </div>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -321,22 +369,30 @@ export default function AssetsPage() {
                 setFormData(null);
               }}
             >
-              {Object.entries(formData).map(([key, value]) => {
-                const label = labels[key as keyof AssetEntry] ?? key;
-                return (
-                  <div key={key} className="space-y-1">
-                    <label className="block text-sm font-medium">
-                      {label}
-                    </label>
-                    <Input
-                      value={String(value)}
-                      onChange={(e) =>
-                        setFormData({ ...formData, [key]: e.target.value })
-                      }
-                    />
-                  </div>
-                );
-              })}
+              {categories.map((cat) => (
+                <div key={cat.title} className="space-y-2">
+                  <h4 className="text-sm font-semibold">{cat.title}</h4>
+                  {cat.keys
+                    .filter((k) => !hiddenFields.includes(k))
+                    .map((k) => {
+                      const label = labels[k];
+                      const value = formData[k];
+                      return (
+                        <div key={k} className="space-y-1">
+                          <label className="block text-sm font-medium">
+                            {label}
+                          </label>
+                          <Input
+                            value={String(value)}
+                            onChange={(e) =>
+                              setFormData({ ...formData, [k]: e.target.value })
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                </div>
+              ))}
               <Button type="submit">Save</Button>
             </form>
           )}

@@ -265,7 +265,7 @@ export default function AssetsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 md:p-10 space-y-6 w-full flex-1">
       <Tabs value={view} onValueChange={setView} className="gap-0 space-y-0">
         <div className="flex items-center justify-between p-4">
           <TabsList>

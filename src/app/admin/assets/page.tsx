@@ -35,6 +35,7 @@ interface AssetEntry {
   issuer: string;
   price: number;
   priceSource: string;
+  compositions: string;
   amountNest: number;
   amountUsd: number;
   estApy: number;
@@ -56,6 +57,7 @@ const integratedAssets: AssetEntry[] = [
     issuer: "Mineral",
     price: 1.23,
     priceSource: "https://example.com/mineral",
+    compositions: "Nest Credit",
     amountNest: 50000,
     amountUsd: 61500,
     estApy: 8.7,
@@ -75,6 +77,7 @@ const integratedAssets: AssetEntry[] = [
     issuer: "Invesco",
     price: 1.08,
     priceSource: "https://example.com/isnr",
+    compositions: "Nest Alpha",
     amountNest: 30000,
     amountUsd: 32400,
     estApy: 6.0,
@@ -97,6 +100,7 @@ const pendingAssets: AssetEntry[] = [
     issuer: "M DAO",
     price: 0.92,
     priceSource: "https://example.com/mbasis",
+    compositions: "",
     amountNest: 0,
     amountUsd: 0,
     estApy: 7.1,
@@ -117,6 +121,10 @@ const categories: { title: string; keys: (keyof AssetEntry)[] }[] = [
   {
     title: "Basic Info",
     keys: ["name", "issuer", "price", "priceSource"],
+  },
+  {
+    title: "Compositions",
+    keys: ["compositions"],
   },
   {
     title: "Position",
@@ -228,6 +236,7 @@ export default function AssetsPage() {
         <Link href={row.getValue<string>("priceSource")}>{"Source"}</Link>
       ),
     },
+    { accessorKey: "compositions", header: headerCell("Compositions"), meta: { label: "Compositions" } },
     { accessorKey: "amountNest", header: headerCell("Amount on Nest"), meta: { label: "Amount on Nest" } },
     { accessorKey: "amountUsd", header: headerCell("Amount in USD"), meta: { label: "Amount in USD" } },
     {
@@ -263,6 +272,7 @@ export default function AssetsPage() {
     issuer: "Issuer name",
     price: "Asset price",
     priceSource: "Price source (URL)",
+    compositions: "Compositions",
     amountNest: "Amount on Nest",
     amountUsd: "Amount in USD",
     estApy: "Estimated APY",

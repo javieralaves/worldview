@@ -198,8 +198,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
   ];
 
   return (
-    <div className="p-6 md:p-10 w-full">
-      <div className="mx-auto max-w-5xl space-y-8">
+    <div className="p-6 md:p-10 w-full flex flex-col items-center">
+      <div className="mx-auto w-full max-w-5xl space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -226,8 +226,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
         </div>
       </div>
 
-      <Tabs defaultValue="charts" className="space-y-4">
-        <TabsList>
+      <Tabs defaultValue="charts" className="space-y-4 w-full">
+        <TabsList className="w-full">
           <TabsTrigger value="charts">Charts</TabsTrigger>
           <TabsTrigger value="info">Info</TabsTrigger>
           <TabsTrigger value="risk">Risk</TabsTrigger>

@@ -108,7 +108,12 @@ const riskBreakdown = [
   },
 ];
 
-export default function AssetPage({ params }: { params: { ticker: string } }) {
+export default function AssetPage({
+  params,
+}: {
+  params: { ticker: string };
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const asset = [...integratedAssets, ...pendingAssets].find(
     (a) => a.ticker.toLowerCase() === params.ticker.toLowerCase(),
   );

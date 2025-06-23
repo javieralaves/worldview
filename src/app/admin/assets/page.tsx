@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -151,24 +151,49 @@ const hiddenFields: (keyof AssetEntry)[] = [
   "nextPayout",
 ];
 
+const integratedDefault: VisibilityState = {
+  priceSource: false,
+  amountUsd: false,
+  estApy: false,
+  yieldReceived: false,
+  yieldExpected: false,
+  yieldCycle: false,
+  lastPaid: false,
+  nextPayout: false,
+  jurisdiction: false,
+  legal: false,
+  redemption: false,
+};
+
+const pendingDefault: VisibilityState = {
+  price: false,
+  priceSource: false,
+  amountNest: false,
+  amountUsd: false,
+  currApy: false,
+  apyDiff: false,
+  yieldReceived: false,
+  yieldExpected: false,
+  yieldCycle: false,
+  lastPaid: false,
+  nextPayout: false,
+  jurisdiction: false,
+  legal: false,
+};
+
 export default function AssetsPage() {
   const [view, setView] = useState("integrated");
   const [integratedData, setIntegratedData] = useState(integratedAssets);
   const [pendingData, setPendingData] = useState(pendingAssets);
   const data = view === "integrated" ? integratedData : pendingData;
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    priceSource: false,
-    amountUsd: false,
-    estApy: false,
-    yieldReceived: false,
-    yieldExpected: false,
-    yieldCycle: false,
-    lastPaid: false,
-    nextPayout: false,
-    jurisdiction: false,
-    legal: false,
-    redemption: false,
-  });
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    integratedDefault,
+  );
+
+  useEffect(() => {
+    setColumnVisibility(view === "integrated" ? integratedDefault : pendingDefault);
+  }, [view]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState<AssetEntry | null>(null);

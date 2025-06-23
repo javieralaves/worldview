@@ -32,6 +32,8 @@ import {
 
 interface AssetEntry {
   name: string;
+  ticker: string;
+  contract: string;
   issuer: string;
   price: number;
   priceSource: string;
@@ -54,6 +56,8 @@ interface AssetEntry {
 const integratedAssets: AssetEntry[] = [
   {
     name: "Mineral Vault",
+    ticker: "MNRL",
+    contract: "0x1111111111111111111111111111111111111111",
     issuer: "Mineral",
     price: 1.23,
     priceSource: "https://example.com/mineral",
@@ -74,6 +78,8 @@ const integratedAssets: AssetEntry[] = [
   },
   {
     name: "iSNR",
+    ticker: "iSNR",
+    contract: "0x2222222222222222222222222222222222222222",
     issuer: "Invesco",
     price: 1.08,
     priceSource: "https://example.com/isnr",
@@ -97,6 +103,8 @@ const integratedAssets: AssetEntry[] = [
 const pendingAssets: AssetEntry[] = [
   {
     name: "mBASIS",
+    ticker: "MBASIS",
+    contract: "0x3333333333333333333333333333333333333333",
     issuer: "M DAO",
     price: 0.92,
     priceSource: "https://example.com/mbasis",
@@ -120,7 +128,7 @@ const pendingAssets: AssetEntry[] = [
 const categories: { title: string; keys: (keyof AssetEntry)[] }[] = [
   {
     title: "Basic Info",
-    keys: ["name", "issuer", "price", "priceSource"],
+    keys: ["name", "ticker", "contract", "issuer", "price", "priceSource"],
   },
   {
     title: "Compositions",
@@ -150,6 +158,8 @@ const categories: { title: string; keys: (keyof AssetEntry)[] }[] = [
 ];
 
 const hiddenFields: (keyof AssetEntry)[] = [
+  "ticker",
+  "contract",
   "amountNest",
   "amountUsd",
   "currApy",
@@ -160,6 +170,8 @@ const hiddenFields: (keyof AssetEntry)[] = [
 ];
 
 const integratedDefault: VisibilityState = {
+  ticker: false,
+  contract: false,
   priceSource: false,
   amountUsd: false,
   estApy: false,
@@ -174,6 +186,8 @@ const integratedDefault: VisibilityState = {
 };
 
 const pendingDefault: VisibilityState = {
+  ticker: false,
+  contract: false,
   price: false,
   priceSource: false,
   amountNest: false,
@@ -221,6 +235,8 @@ export default function AssetsPage() {
 
   const columns: ColumnDef<AssetEntry>[] = [
     { accessorKey: "name", header: headerCell("Asset name"), meta: { label: "Asset name" } },
+    { accessorKey: "ticker", header: headerCell("Ticker"), meta: { label: "Ticker" } },
+    { accessorKey: "contract", header: headerCell("Contract"), meta: { label: "Contract" } },
     { accessorKey: "issuer", header: headerCell("Issuer name"), meta: { label: "Issuer name" } },
     {
       accessorKey: "price",
@@ -269,6 +285,8 @@ export default function AssetsPage() {
 
   const labels: Record<keyof AssetEntry, string> = {
     name: "Asset name",
+    ticker: "Ticker",
+    contract: "Contract",
     issuer: "Issuer name",
     price: "Asset price",
     priceSource: "Price source (URL)",

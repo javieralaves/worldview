@@ -20,7 +20,7 @@ const chivoMono = localFont({
   display: "swap",
 });
 import { WalletProvider } from "@/components/wallet-context";
-import { TopNav } from "@/components/top-nav";
+import { TopNavConditional } from "@/components/top-nav-conditional";
 import { ThemeProvider } from "@/components/theme-context";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -39,7 +39,7 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <ThemeProvider>
           <WalletProvider>
-            <TopNav />
+            <TopNavConditional />
             {children}
           </WalletProvider>
           <Toaster position="bottom-right" />

@@ -199,7 +199,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
 
   return (
     <div className="p-6 md:p-10 w-full flex flex-col">
-      <div className="mx-auto w-full space-y-8">
+      <div className="mx-auto w-full max-w-[800px] space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -233,8 +233,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
           <TabsTrigger value="risk">Risk</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
-        <TabsContent value="charts" className="space-y-6">
-          <Card>
+        <TabsContent value="charts" className="space-y-6 w-full">
+          <Card className="w-full">
             <CardHeader className="flex items-center justify-between">
               <CardTitle>{`${asset.ticker} on Nest`}</CardTitle>
               <Tabs value={tvlView} onValueChange={handleTvlViewChange} className="ml-auto">
@@ -261,7 +261,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="w-full">
             <CardHeader>
               <CardTitle>Historical APY</CardTitle>
             </CardHeader>
@@ -281,7 +281,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="w-full">
             <CardHeader>
               <CardTitle>Historical Price</CardTitle>
             </CardHeader>
@@ -304,9 +304,9 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="info" className="space-y-6">
+        <TabsContent value="info" className="space-y-6 w-full">
           {groups.map((group) => (
-            <Card key={group.title} className="shadow-none">
+            <Card key={group.title} className="shadow-none w-full">
               <CardHeader className="flex-row items-center justify-between">
                 <CardTitle>{group.title}</CardTitle>
               </CardHeader>
@@ -390,7 +390,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             </Card>
           )}
         </TabsContent>
-        <TabsContent value="risk" className="space-y-6">
+        <TabsContent value="risk" className="space-y-6 w-full">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-medium">Tokenized risk score</span>
@@ -413,7 +413,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             </div>
           ))}
           {riskBreakdown.map((section) => (
-            <Card key={section.title} className="shadow-none">
+            <Card key={section.title} className="shadow-none w-full">
               <CardHeader>
                 <CardTitle>{section.title}</CardTitle>
               </CardHeader>
@@ -428,8 +428,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             </Card>
           ))}
         </TabsContent>
-        <TabsContent value="activity" className="space-y-6">
-          <Card>
+        <TabsContent value="activity" className="space-y-6 w-full">
+          <Card className="w-full">
             <CardHeader>
               <CardTitle>Yield payouts</CardTitle>
             </CardHeader>

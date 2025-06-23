@@ -230,6 +230,8 @@ export default function AssetsPage() {
     jurisdiction: "Jurisdiction",
     legal: "Legal Structure",
     redemption: "Redemption Duration",
+    scorecard: "Scorecard",
+    underwriter: "Underwriter",
   };
 
   const table = useReactTable({

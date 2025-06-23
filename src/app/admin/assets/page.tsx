@@ -275,8 +275,8 @@ export default function AssetsPage() {
 
   return (
     <div className="space-y-6">
-      <Tabs value={view} onValueChange={setView} className="space-y-4">
-        <div className="flex items-center justify-between px-6 md:px-10 py-6">
+      <Tabs value={view} onValueChange={setView} className="gap-0 space-y-0">
+        <div className="flex items-center justify-between p-4">
           <TabsList>
             <TabsTrigger value="integrated">Integrated</TabsTrigger>
             <TabsTrigger value="pending">To integrate</TabsTrigger>

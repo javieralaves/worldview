@@ -9,7 +9,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <SidebarProvider>
       <div className="flex h-[calc(100svh-4rem)] md:h-[calc(100svh-72px)]">
         <Sidebar className="border-r" collapsible="offcanvas">
-          <SidebarHeader className="text-lg font-medium px-2 py-3">Admin</SidebarHeader>
+          <SidebarHeader className="px-2 pt-3 pb-1">
+            <Link href="/" className="text-sm underline">
+              Back to app
+            </Link>
+          </SidebarHeader>
+          <SidebarHeader className="flex items-center gap-2 text-lg font-medium px-2 py-3">
+            <img src="/nest-logo.svg" alt="Nest logo" className="w-5 h-5" />
+            <span>Admin</span>
+          </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>

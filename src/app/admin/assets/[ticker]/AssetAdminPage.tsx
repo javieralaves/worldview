@@ -198,8 +198,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
   ];
 
   return (
-    <div className="p-6 md:p-10 w-full">
-      <div className="mx-auto max-w-5xl space-y-8">
+    <div className="flex h-full w-full items-center justify-center p-6 md:p-10">
+      <div className="w-[800px] space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

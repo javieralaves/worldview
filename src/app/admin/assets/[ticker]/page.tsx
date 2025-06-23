@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: Promise<{ ticker: strin
   );
   if (!asset) {
     return (
-      <div className="p-6 md:p-10">
+      <div className="flex items-center justify-center w-full h-full p-6 md:p-10">
         <p>Asset not found.</p>
       </div>
     );

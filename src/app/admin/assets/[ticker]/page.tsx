@@ -1,5 +1,5 @@
 import { integratedAssets, pendingAssets } from "../data";
-import ClientPage from "./ClientPage";
+import AssetAdminPage from "./AssetAdminPage";
 
 export default async function Page({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
@@ -13,5 +13,5 @@ export default async function Page({ params }: { params: Promise<{ ticker: strin
       </div>
     );
   }
-  return <ClientPage asset={asset} />;
+  return <AssetAdminPage asset={asset} />;
 }

@@ -19,6 +19,8 @@ export interface AssetEntry {
   jurisdiction: string;
   legal: string;
   redemption: string;
+  scorecard: string;
+  underwriter: string;
 }
 
 export const integratedAssets: AssetEntry[] = [
@@ -43,6 +45,8 @@ export const integratedAssets: AssetEntry[] = [
     jurisdiction: "US",
     legal: "SPV",
     redemption: "7 days",
+    scorecard: "https://example.com/scorecard/mnrl",
+    underwriter: "Cicada Partners",
   },
   {
     name: "iSNR",
@@ -65,6 +69,8 @@ export const integratedAssets: AssetEntry[] = [
     jurisdiction: "US",
     legal: "Reg D",
     redemption: "14 days",
+    scorecard: "https://example.com/scorecard/isnr",
+    underwriter: "Cicada Partners",
   },
 ];
 
@@ -90,5 +96,7 @@ export const pendingAssets: AssetEntry[] = [
     jurisdiction: "SG",
     legal: "DAO",
     redemption: "-",
+    scorecard: "https://example.com/scorecard/mbasis",
+    underwriter: "Cicada Partners",
   },
 ];

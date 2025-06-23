@@ -21,6 +21,15 @@ export interface AssetEntry {
   redemption: string;
   scorecard: string;
   underwriter: string;
+  status: "Completed" | "Pending";
+  riskScore: number;
+  custodian: string;
+  allocations?: {
+    vault: string;
+    amountUsd: number;
+    allocationPct: number;
+  }[];
+  attestationHistory: { date: string; summary: string }[];
 }
 
 export const integratedAssets: AssetEntry[] = [
@@ -47,6 +56,16 @@ export const integratedAssets: AssetEntry[] = [
     redemption: "7 days",
     scorecard: "https://example.com/scorecard/mnrl",
     underwriter: "Cicada Partners",
+    status: "Completed",
+    riskScore: 4.2,
+    custodian: "Wells Fargo Bank, N.A.",
+    allocations: [
+      { vault: "Nest Credit", amountUsd: 61500, allocationPct: 100 },
+    ],
+    attestationHistory: [
+      { date: "2024-05-01", summary: "Initial attestation" },
+      { date: "2024-06-01", summary: "Monthly attestation" },
+    ],
   },
   {
     name: "iSNR",
@@ -71,6 +90,16 @@ export const integratedAssets: AssetEntry[] = [
     redemption: "14 days",
     scorecard: "https://example.com/scorecard/isnr",
     underwriter: "Cicada Partners",
+    status: "Completed",
+    riskScore: 3.8,
+    custodian: "Bank of New York Mellon",
+    allocations: [
+      { vault: "Nest Alpha", amountUsd: 32400, allocationPct: 100 },
+    ],
+    attestationHistory: [
+      { date: "2024-04-15", summary: "Initial attestation" },
+      { date: "2024-05-15", summary: "Quarterly attestation" },
+    ],
   },
 ];
 
@@ -98,5 +127,9 @@ export const pendingAssets: AssetEntry[] = [
     redemption: "-",
     scorecard: "https://example.com/scorecard/mbasis",
     underwriter: "Cicada Partners",
+    status: "Pending",
+    riskScore: 3.5,
+    custodian: "TBD",
+    attestationHistory: [],
   },
 ];

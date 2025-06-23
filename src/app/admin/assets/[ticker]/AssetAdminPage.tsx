@@ -145,6 +145,9 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
   const [editingField, setEditingField] = useState<keyof AssetEntry | null>(null);
   const [formData, setFormData] = useState<AssetEntry>(asset);
   const [tvlView, setTvlView] = useState<"asset" | "usd">("asset");
+  const handleTvlViewChange = (value: string) => {
+    setTvlView(value as "asset" | "usd");
+  };
 
   const labels: Record<keyof AssetEntry, string> = {
     name: "Asset name",
@@ -221,7 +224,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
           <Card>
             <CardHeader className="flex items-center justify-between">
               <CardTitle>{`${asset.ticker} on Nest`}</CardTitle>
-              <Tabs value={tvlView} onValueChange={setTvlView} className="ml-auto">
+              <Tabs value={tvlView} onValueChange={handleTvlViewChange} className="ml-auto">
                 <TabsList>
                   <TabsTrigger value="asset">{asset.ticker}</TabsTrigger>
                   <TabsTrigger value="usd">USD</TabsTrigger>

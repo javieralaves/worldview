@@ -159,9 +159,12 @@ export default function AssetsPage() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     priceSource: false,
     amountUsd: false,
+    estApy: false,
     yieldReceived: false,
     yieldExpected: false,
+    yieldCycle: false,
     lastPaid: false,
+    nextPayout: false,
     jurisdiction: false,
     legal: false,
     redemption: false,
@@ -271,10 +274,9 @@ export default function AssetsPage() {
   };
 
   return (
-    <div className="p-6 md:p-10 space-y-6">
-      <h1 className="text-2xl font-semibold">Assets</h1>
+    <div className="space-y-6">
       <Tabs value={view} onValueChange={setView} className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-6 md:px-10 py-6">
           <TabsList>
             <TabsTrigger value="integrated">Integrated</TabsTrigger>
             <TabsTrigger value="pending">To integrate</TabsTrigger>

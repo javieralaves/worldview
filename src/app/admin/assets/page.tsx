@@ -218,7 +218,7 @@ export default function AssetsPage() {
     },
   ];
 
-  const labels: Record<keyof AssetEntry, string> = {
+  const labels: Partial<Record<keyof AssetEntry, string>> = {
     name: "Asset name",
     ticker: "Ticker",
     contract: "Contract",

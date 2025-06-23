@@ -154,7 +154,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
   const latestApy = apyHistory[apyHistory.length - 1].apy;
   const latestPrice = priceHistory[priceHistory.length - 1].price;
 
-  const labels: Record<keyof AssetEntry, string> = {
+  const labels: Partial<Record<keyof AssetEntry, string>> = {
     name: "Asset name",
     ticker: "Ticker",
     contract: "Contract",
@@ -315,7 +315,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
                   <div key={k} className="flex items-center gap-2">
                     <div className="flex-1">
                       <div className="text-sm text-muted-foreground">{labels[k]}</div>
-                      <div>{formData[k]}</div>
+                      <div>{String(formData[k])}</div>
                     </div>
                     {!readOnlyFields.includes(k) && (
                       <Button

@@ -118,7 +118,7 @@ const inboxItems: InboxItem[] = [
 export default function AdminPage() {
 
   return (
-    <div className="p-6 md:p-10 space-y-8">
+    <div className="p-6 md:p-10 space-y-8 w-full flex-1">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-medium">Welcome to the Nest Console</h1>
         <Button>New Vault</Button>

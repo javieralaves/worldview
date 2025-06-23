@@ -63,6 +63,10 @@ const categories: { title: string; keys: (keyof AssetEntry)[] }[] = [
     title: "Legal & Terms",
     keys: ["jurisdiction", "legal", "redemption"],
   },
+  {
+    title: "Risk",
+    keys: ["riskScore"],
+  },
 ];
 
 const hiddenFields: (keyof AssetEntry)[] = [
@@ -75,6 +79,7 @@ const hiddenFields: (keyof AssetEntry)[] = [
   "yieldReceived",
   "lastPaid",
   "nextPayout",
+  "riskScore",
 ];
 
 const integratedDefault: VisibilityState = {
@@ -91,6 +96,7 @@ const integratedDefault: VisibilityState = {
   jurisdiction: false,
   legal: false,
   redemption: false,
+  riskScore: true,
 };
 
 const pendingDefault: VisibilityState = {
@@ -98,6 +104,7 @@ const pendingDefault: VisibilityState = {
   contract: false,
   price: false,
   priceSource: false,
+  compositions: false,
   amountNest: false,
   amountUsd: false,
   currApy: false,
@@ -109,6 +116,7 @@ const pendingDefault: VisibilityState = {
   nextPayout: false,
   jurisdiction: false,
   legal: false,
+  riskScore: false,
 };
 
 export default function AssetsPage() {
@@ -164,6 +172,7 @@ export default function AssetsPage() {
     { accessorKey: "compositions", header: headerCell("Compositions"), meta: { label: "Compositions" } },
     { accessorKey: "amountNest", header: headerCell("Amount on Nest"), meta: { label: "Amount on Nest" } },
     { accessorKey: "amountUsd", header: headerCell("Amount in USD"), meta: { label: "Amount in USD" } },
+    { accessorKey: "riskScore", header: headerCell("Tokenized Risk Score"), meta: { label: "Tokenized Risk Score" }, cell: ({ row }) => row.getValue<number>("riskScore").toFixed(1) },
     {
       accessorKey: "estApy",
       header: headerCell("Estimated APY"),
@@ -232,6 +241,7 @@ export default function AssetsPage() {
     redemption: "Redemption Duration",
     scorecard: "Scorecard",
     underwriter: "Underwriter",
+    riskScore: "Tokenized Risk Score",
   };
 
   const table = useReactTable({

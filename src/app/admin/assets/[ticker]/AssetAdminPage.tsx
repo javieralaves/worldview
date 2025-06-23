@@ -31,6 +31,7 @@ import {
   XAxis,
   YAxis,
   Tooltip as RechartsTooltip,
+  ReferenceLine,
 } from "recharts";
 import type { AssetEntry } from "../data";
 
@@ -149,6 +150,10 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
     setTvlView(value as "asset" | "usd");
   };
 
+  const latestTvl = (tvlView === "usd" ? tvlHistoryUsd : tvlHistory)[tvlHistory.length - 1].tvl;
+  const latestApy = apyHistory[apyHistory.length - 1].apy;
+  const latestPrice = priceHistory[priceHistory.length - 1].price;
+
   const labels: Record<keyof AssetEntry, string> = {
     name: "Asset name",
     ticker: "Ticker",
@@ -172,6 +177,9 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
     redemption: "Redemption Duration",
     scorecard: "Scorecard",
     underwriter: "Underwriter",
+    status: "Status",
+    riskScore: "Tokenized Risk Score",
+    custodian: "Custodian",
   };
 
   const groups: { title: string; keys: (keyof AssetEntry)[] }[] = [
@@ -186,11 +194,12 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
     "amountNest",
     "amountUsd",
     "lastPaid",
+    "nextPayout",
   ];
 
   return (
-    <div className="p-6 md:p-10">
-      <div className="mx-auto w-[800px] space-y-8">
+    <div className="p-6 md:p-10 w-full">
+      <div className="mx-auto max-w-5xl space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -207,9 +216,13 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
 
       <div className="flex items-center gap-4">
         <img src={assetIcons[asset.ticker] || "/tokens/nest-alpha.svg"} alt="" className="size-12" />
-        <div>
+        <div className="space-y-1">
           <h1 className="text-2xl font-medium">{asset.name}</h1>
           <p className="text-muted-foreground">{asset.ticker}</p>
+          <div className="flex items-center gap-1 text-sm">
+            <span className={`size-2 rounded-full ${asset.status === "Completed" ? "bg-green-500" : "bg-yellow-500"}`} />
+            {asset.status}
+          </div>
         </div>
       </div>
 
@@ -231,7 +244,10 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
                 </TabsList>
               </Tabs>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-medium">
+                {tvlView === "usd" ? `$${latestTvl.toLocaleString()}` : latestTvl}
+              </div>
               <ResponsiveContainer width="100%" height={200}>
                 <RechartsAreaChart data={tvlView === 'usd' ? tvlHistoryUsd : tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <RechartsTooltip
@@ -249,7 +265,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             <CardHeader>
               <CardTitle>Historical APY</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-medium">{latestApy}%</div>
               <ResponsiveContainer width="100%" height={200}>
                 <RechartsAreaChart data={apyHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <RechartsTooltip
@@ -257,6 +274,7 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
                     labelStyle={{ color: "hsl(var(--popover-foreground))" }}
                   />
                   <Area type="monotone" dataKey="apy" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" />
+                  <ReferenceLine y={asset.estApy} strokeDasharray="4 4" stroke="hsl(var(--muted-foreground))" />
                   <XAxis dataKey="month" className="text-xs" />
                   <YAxis className="text-xs" />
                 </RechartsAreaChart>
@@ -267,7 +285,8 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
             <CardHeader>
               <CardTitle>Historical Price</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-medium">{`$${latestPrice.toFixed(2)}`}</div>
               <ResponsiveContainer width="100%" height={200}>
                 <RechartsAreaChart data={priceHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <RechartsTooltip
@@ -313,6 +332,63 @@ export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
               </CardContent>
             </Card>
           ))}
+
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle>Custody</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <strong>Custodian:</strong> {asset.custodian}
+              </div>
+              {asset.attestationHistory.length > 0 && (
+                <Table>
+                  <TableHeader className="bg-muted">
+                    <TableRow className="border-muted">
+                      <TableHead>Date</TableHead>
+                      <TableHead>Summary</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {asset.attestationHistory.map((a, i) => (
+                      <TableRow key={i} className="border-muted">
+                        <TableCell>{a.date}</TableCell>
+                        <TableCell>{a.summary}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+
+          {asset.allocations && (
+            <Card className="shadow-none">
+              <CardHeader>
+                <CardTitle>Vault Allocations</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader className="bg-muted">
+                    <TableRow className="border-muted">
+                      <TableHead>Vault</TableHead>
+                      <TableHead className="text-right">Amount in USD</TableHead>
+                      <TableHead className="text-right">Allocation %</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {asset.allocations.map((a, i) => (
+                      <TableRow key={i} className="border-muted">
+                        <TableCell>{a.vault}</TableCell>
+                        <TableCell className="text-right">{a.amountUsd.toLocaleString()}</TableCell>
+                        <TableCell className="text-right">{a.allocationPct}%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
         <TabsContent value="risk" className="space-y-6">
           <div className="space-y-2">

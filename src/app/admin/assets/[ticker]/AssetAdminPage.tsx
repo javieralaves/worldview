@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   ResponsiveContainer,
   AreaChart as RechartsAreaChart,
@@ -41,6 +49,8 @@ const tvlHistory = [
   { month: "Jun", tvl: 5 },
 ];
 
+const tvlHistoryUsd = tvlHistory.map((d) => ({ month: d.month, tvl: d.tvl * 10 }));
+
 const apyHistory = [
   { month: "Jan", apy: 7 },
   { month: "Feb", apy: 7.5 },
@@ -59,58 +69,82 @@ const priceHistory = [
   { month: "Jun", price: 1.06 },
 ];
 
+const activityHistory = [
+  { date: "2024-01-15", amount: 1000 },
+  { date: "2024-02-15", amount: 900 },
+  { date: "2024-03-15", amount: 1100 },
+  { date: "2024-04-15", amount: 950 },
+];
+
 const riskBreakdown = [
   {
     title: "Assets",
+    weight: 0.25,
     factors: [
-      { label: "Diversification", score: 3 },
-      { label: "Portfolio Quality", score: 4 },
-      { label: "Liquidity", score: 3 },
-      { label: "Counterparty Concentration", score: 3 },
-      { label: "Counterparty Quality", score: 3 },
-      { label: "Base Currency Risk", score: 2 },
+      { label: "Diversification", score: 3, weight: 0.2 },
+      { label: "Portfolio Quality", score: 4, weight: 0.25 },
+      { label: "Liquidity", score: 3, weight: 0.25 },
+      { label: "Counterparty Concentration", score: 3, weight: 0.1 },
+      { label: "Counterparty Quality", score: 3, weight: 0.1 },
+      { label: "Base Currency Risk", score: 2, weight: 0.1 },
     ],
   },
   {
     title: "Capital",
+    weight: 0.25,
     factors: [
-      { label: "Cash Flow Leverage", score: 3 },
-      { label: "Balance Sheet Leverage", score: 3 },
-      { label: "Seniority", score: 4 },
-      { label: "Quality of Outside Capital", score: 3 },
-      { label: "Systemic Importance", score: 2 },
+      { label: "Cash Flow Leverage", score: 3, weight: 0.25 },
+      { label: "Balance Sheet Leverage", score: 3, weight: 0.25 },
+      { label: "Seniority", score: 4, weight: 0.25 },
+      { label: "Quality of Outside Capital", score: 3, weight: 0.15 },
+      { label: "Systemic Importance", score: 2, weight: 0.1 },
     ],
   },
   {
     title: "Quality",
+    weight: 0.2,
     factors: [
-      { label: "ROC/Track Record", score: 3 },
-      { label: "Retention Rates / Customer Stickiness", score: 3 },
-      { label: "Historical Trending CAGRs", score: 3 },
-      { label: "Cash Flow", score: 3 },
-      { label: "Pricing Power", score: 3 },
-      { label: "Business Competitiveness and Strategy", score: 3 },
-      { label: "Complexity", score: 2 },
+      { label: "ROC/Track Record", score: 3, weight: 0.15 },
+      { label: "Retention Rates / Customer Stickiness", score: 3, weight: 0.2 },
+      { label: "Historical Trending CAGRs", score: 3, weight: 0.05 },
+      { label: "Cash Flow", score: 3, weight: 0.2 },
+      { label: "Pricing Power", score: 3, weight: 0.15 },
+      { label: "Business Competitiveness and Strategy", score: 3, weight: 0.15 },
+      { label: "Complexity", score: 2, weight: 0.1 },
     ],
   },
   {
     title: "Management",
+    weight: 0.3,
     factors: [
-      { label: "Incentive Alignment", score: 3 },
-      { label: "Legacy/Reputation/Franchise Position", score: 3 },
-      { label: "Intangibles", score: 3 },
-      { label: "Transparency", score: 3 },
-      { label: "Consistency of Reporting", score: 3 },
-      { label: "Opacity of Reports", score: 2 },
-      { label: "Excess Reports", score: 3 },
+      { label: "Incentive Alignment", score: 3, weight: 0.15 },
+      { label: "Legacy/Reputation/Franchise Position", score: 3, weight: 0.1 },
+      { label: "Intangibles", score: 3, weight: 0.1 },
+      { label: "Transparency", score: 3, weight: 0.1 },
+      { label: "Consistency of Reporting", score: 3, weight: 0.2 },
+      { label: "Opacity of Reports", score: 2, weight: 0.2 },
+      { label: "Excess Reports", score: 3, weight: 0.15 },
     ],
   },
 ];
 
-export default function ClientPage({ asset }: { asset: AssetEntry }) {
-  const router = useRouter();
+const categoryScores = riskBreakdown.map((cat) => {
+  const score = cat.factors.reduce(
+    (s, f) => s + f.score * f.weight,
+    0,
+  );
+  return { title: cat.title, score, weight: cat.weight };
+});
+
+const totalRiskScore = categoryScores.reduce(
+  (s, c) => s + c.score * c.weight,
+  0,
+);
+
+export default function AssetAdminPage({ asset }: { asset: AssetEntry }) {
   const [editingField, setEditingField] = useState<keyof AssetEntry | null>(null);
   const [formData, setFormData] = useState<AssetEntry>(asset);
+  const [tvlView, setTvlView] = useState<"asset" | "usd">("asset");
 
   const labels: Record<keyof AssetEntry, string> = {
     name: "Asset name",
@@ -118,7 +152,7 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
     contract: "Contract",
     issuer: "Issuer name",
     price: "Asset price",
-    priceSource: "Price source (URL)",
+    priceSource: "Price source",
     compositions: "Compositions",
     amountNest: "Amount on Nest",
     amountUsd: "Amount in USD",
@@ -133,6 +167,8 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
     jurisdiction: "Jurisdiction",
     legal: "Legal Structure",
     redemption: "Redemption Duration",
+    scorecard: "Scorecard",
+    underwriter: "Underwriter",
   };
 
   const groups: { title: string; keys: (keyof AssetEntry)[] }[] = [
@@ -142,8 +178,16 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
     { title: "Legal", keys: ["jurisdiction", "legal", "redemption"] },
   ];
 
+  const readOnlyFields: (keyof AssetEntry)[] = [
+    "price",
+    "amountNest",
+    "amountUsd",
+    "lastPaid",
+  ];
+
   return (
-    <div className="p-6 md:p-10 space-y-8">
+    <div className="p-6 md:p-10">
+      <div className="mx-auto w-[800px] space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -164,9 +208,6 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
           <h1 className="text-2xl font-medium">{asset.name}</h1>
           <p className="text-muted-foreground">{asset.ticker}</p>
         </div>
-        <div className="ml-auto">
-          <Button onClick={() => router.push(`/admin/assets`)}>Back</Button>
-        </div>
       </div>
 
       <Tabs defaultValue="charts" className="space-y-4">
@@ -174,15 +215,22 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
           <TabsTrigger value="charts">Charts</TabsTrigger>
           <TabsTrigger value="info">Info</TabsTrigger>
           <TabsTrigger value="risk">Risk</TabsTrigger>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
         <TabsContent value="charts" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>TVL on Nest</CardTitle>
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle>{`${asset.ticker} on Nest`}</CardTitle>
+              <Tabs value={tvlView} onValueChange={setTvlView} className="ml-auto">
+                <TabsList>
+                  <TabsTrigger value="asset">{asset.ticker}</TabsTrigger>
+                  <TabsTrigger value="usd">USD</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
-                <RechartsAreaChart data={tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <RechartsAreaChart data={tvlView === 'usd' ? tvlHistoryUsd : tvlHistory} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <RechartsTooltip
                     contentStyle={{ background: "hsl(var(--popover))", borderColor: "hsl(var(--border))" }}
                     labelStyle={{ color: "hsl(var(--popover-foreground))" }}
@@ -247,14 +295,16 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
                       <div className="text-sm text-muted-foreground">{labels[k]}</div>
                       <div>{formData[k]}</div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setEditingField(k)}
-                      className="size-6"
-                    >
-                      Edit
-                    </Button>
+                    {!readOnlyFields.includes(k) && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditingField(k)}
+                        className="size-6"
+                      >
+                        Edit
+                      </Button>
+                    )}
                   </div>
                 ))}
               </CardContent>
@@ -262,6 +312,27 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
           ))}
         </TabsContent>
         <TabsContent value="risk" className="space-y-6">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Tokenized risk score</span>
+              <span className="text-xl">{totalRiskScore.toFixed(2)}/5</span>
+            </div>
+            <div className="text-sm">
+              <Link href={asset.scorecard} className="underline mr-2">
+                Scorecard
+              </Link>
+              Underwriter: {asset.underwriter}
+            </div>
+          </div>
+          {categoryScores.map((cat) => (
+            <div key={cat.title} className="space-y-1">
+              <div className="flex justify-between text-sm">
+                <span>{cat.title}</span>
+                <span>{cat.score.toFixed(2)}/5</span>
+              </div>
+              <Progress value={cat.score * 20} />
+            </div>
+          ))}
           {riskBreakdown.map((section) => (
             <Card key={section.title} className="shadow-none">
               <CardHeader>
@@ -278,6 +349,31 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
             </Card>
           ))}
         </TabsContent>
+        <TabsContent value="activity" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Yield payouts</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader className="bg-muted">
+                  <TableRow className="border-muted">
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {activityHistory.map((a, i) => (
+                    <TableRow key={i} className="border-muted">
+                      <TableCell>{a.date}</TableCell>
+                      <TableCell className="text-right">{a.amount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       <Dialog open={editingField !== null} onOpenChange={(o) => !o && setEditingField(null)}>
@@ -292,17 +388,74 @@ export default function ClientPage({ asset }: { asset: AssetEntry }) {
                 e.preventDefault();
                 if (!editingField) return;
                 const form = e.target as HTMLFormElement;
-                const input = form.elements.namedItem("value") as HTMLInputElement;
-                setFormData({ ...formData, [editingField]: input.value });
+                let value = "";
+                if (editingField === "priceSource") {
+                  const input = form.elements.namedItem("value") as HTMLInputElement;
+                  value = `https://${input.value}`;
+                } else if (editingField === "yieldCycle") {
+                  const qty = form.elements.namedItem("quantity") as HTMLInputElement;
+                  const period = form.elements.namedItem("period") as HTMLSelectElement;
+                  value = `${qty.value} ${period.value === "weeks" ? "weeks" : "months"}`;
+                } else if (editingField === "redemption") {
+                  const qty = form.elements.namedItem("quantity") as HTMLInputElement;
+                  const period = form.elements.namedItem("period") as HTMLSelectElement;
+                  value = `${qty.value} ${period.value}`;
+                } else {
+                  const input = form.elements.namedItem("value") as HTMLInputElement;
+                  value = input.value;
+                }
+                setFormData({ ...formData, [editingField]: value });
                 setEditingField(null);
               }}
             >
-              <Input name="value" defaultValue={String(formData[editingField])} />
+              {editingField === "priceSource" && (
+                <div className="flex">
+                  <span className="inline-flex items-center rounded-l-md border border-r-0 px-2 text-sm text-muted-foreground bg-muted">
+                    https://
+                  </span>
+                  <Input name="value" defaultValue={formData.priceSource.replace(/^https?:\/\//, "")} className="rounded-l-none" />
+                </div>
+              )}
+              {editingField === "yieldCycle" && (
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    name="quantity"
+                    defaultValue={parseInt(formData.yieldCycle) || 1}
+                    className="w-20"
+                  />
+                  <select name="period" defaultValue={formData.yieldCycle.includes("Week") || formData.yieldCycle.includes("week") ? "weeks" : "months"} className="border rounded-md px-2">
+                    <option value="weeks">Weekly</option>
+                    <option value="months">Monthly</option>
+                  </select>
+                </div>
+              )}
+              {editingField === "redemption" && (
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    name="quantity"
+                    defaultValue={parseInt(formData.redemption) || 0}
+                    className="w-20"
+                  />
+                  <select name="period" defaultValue={(formData.redemption.split(" ")[1] ?? "days").toLowerCase()} className="border rounded-md px-2">
+                    <option value="days">Days</option>
+                    <option value="weeks">Weeks</option>
+                    <option value="months">Months</option>
+                  </select>
+                </div>
+              )}
+              {editingField !== "priceSource" &&
+                editingField !== "yieldCycle" &&
+                editingField !== "redemption" && (
+                  <Input name="value" defaultValue={String(formData[editingField])} />
+                )}
               <Button type="submit">Save</Button>
             </form>
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
